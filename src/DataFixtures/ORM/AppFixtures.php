@@ -12,6 +12,8 @@ namespace App\DataFixtures\ORM;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\Entity\Product;
+use App\Entity\Client;
+use App\Entity\Users;
 
 
 
@@ -130,11 +132,29 @@ class AppFixtures extends Fixture{
             $product->setRam($ram[$i]);
             
             $manager->persist($product);
-            $manager->flush();
+           
             
             
         }
         
+        $client = new Client();
+        $client->setCompagnyName('SARL SmoMobile');
+        $client->setAdress('25 rue de la paix Paris');
+        $client->setNumber('01456585');
+        
+        $manager->persist($client);
+        
+        
+        $user = new Users();
+        
+        $user->setName('Jhon');
+        $user->setSurname('Do');
+        $user->setMail('Jhone@gmail.com');
+        $user->setMdp('123');
+        
+        $manager->persist($user);
+        
+        $manager->flush();
         
         
     }
