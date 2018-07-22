@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Response;
 
+
+
 class BilemoController extends Controller
 {
     /**
@@ -30,12 +32,17 @@ class BilemoController extends Controller
     public function post (Request $request) {
         
         
-        $data = $request->getContent();
-        $mobile = $this->get('serializer')->deserialize($data,'App\Entity\Product', json);
+       $data = $request->getContent();
         
-        dump($mobile); die;
+      
+       $mobile = $this->get('serializer')->deserialize($data,'App\Entity\Product', 'json');
         
-        
+       $em = $this->getDoctrine()->getManager();
+       
+       $em->persist($mobile);
+       $em->flush();
+       
+       return New Response('', Response::HTTP_CREATED);
         
         ;
     }
