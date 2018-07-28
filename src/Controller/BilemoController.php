@@ -7,6 +7,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Users;
+use App\Entity\Client;
 
 
 
@@ -59,15 +61,156 @@ class BilemoController extends Controller
         $em =$this->getDoctrine()->getManager();
         $listMobile = $em->getRepository(Product::class)->findAll();
         
-        //dump($listMobile);
+        if($listMobile){
+            
+            $data = $this->get('serializer')->serialize($listMobile, 'json');
+            
+            $response = new Response($data);
+            $response->headers->set('Content-Type', 'application/json');
+            
+            return $response;
+            
+                       
+        }else{
+            
+            $error = ['error'=> 'product not found'];
+            
+            $data = $this->get('serializer')->serialize($error, 'json');
+            
+            $reponse = new Response($data);
+            
+            $reponse->headers->set('Content-Type', 'application/json');
+            
+            return $reponse;
+        }
         
-        $data = $this->get('serializer')->serialize($listMobile, 'json');
+
         
-        $response = new Response($data);
-        $response->headers->set('Content-Type', 'application/json');
+            }
+            
+    /**
+     * @Route("/Mobile/{id}", name="detail_mobile")
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    
+    public function getmobile($id){
         
-        return $response;
         
-        ;
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        $mobile = $em->getRepository(Product::class)->find($id);
+        
+        if($mobile){
+            
+            $data = $this->get('serializer')->serialize($mobile, 'json');
+            
+            $reponse = new Response($data);
+            
+            $reponse->headers->set('Content-Type', 'application/json');
+            
+            return $reponse;
+            
+        }else{
+            
+            $error = ['error'=> 'product not found'];
+            
+            $data = $this->get('serializer')->serialize($error, 'json');
+            
+            $reponse = new Response($data);
+            
+            $reponse->headers->set('Content-Type', 'application/json');
+            
+            return $reponse;
+        }
+        
+        
     }
-}
+    
+    /**
+     * @Route("/listeUsers/{nameComapagny}", name="listeUsersByCompany")
+     * @param string nameComapagny
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    
+    public function getUserByNameCompany($nameComapagny){
+        
+        
+ 
+       
+        $em2 = $this->getDoctrine()->getManager();
+        $compagny = $em2->getRepository(Client::class)->findOneBy(array('compagnyName'=> $nameComapagny));
+        
+        
+        if ($compagny){
+            
+            $idCompagny = $compagny->getId();
+            
+            $em = $this->getDoctrine()->getManager();
+            
+            $users = $em->getRepository(Users::class)->findBy(array('clientid'=>$idCompagny));
+            
+            var_dump($idCompagny);
+            if ($users){
+                
+                $data = $this->get('jms_serializer')->serialize($users,'json');
+                
+                $reponse = new Response($data);
+                $reponse->headers->set('Content-Type', 'application/json');
+                
+                return $reponse;
+            }else{
+                
+                $error = ['error'=> 'Users not found'];
+                
+                $data = $this->get('jms_serializer')->serialize($error, 'json');
+                
+                $reponse = new Response($data);
+                
+                $reponse->headers->set('Content-Type', 'application/json');
+                
+                return $reponse;
+            }
+            
+        }else{
+            
+            $error = ['error'=> 'Client not found'];
+            
+            $data = $this->get('jms_serializer')->serialize($error, 'json');
+            
+            $reponse = new Response($data);
+            
+            $reponse->headers->set('Content-Type', 'application/json');
+            
+            return $reponse;
+            
+        }
+
+        }
+        /**
+         * @Route("/createUser", name="createUser")
+         * @method({"POST"})
+         * @param Request $request
+         * @return \Symfony\Component\HttpFoundation\Response
+         */
+        
+        public function putUser(Request $request){
+            
+            $data = $request->getContent();
+            
+            
+            $user = $this->get('jms_serializer')->deserialize($data, Users::class,'json');
+            // manque idclient          
+                       
+            $em = $this->getDoctrine()->getManager();
+            
+            $em->persist($user);
+            $em->flush();
+            
+            return new Response('', Response::HTTP_CREATED);
+        }
+    }
+    
+    
+

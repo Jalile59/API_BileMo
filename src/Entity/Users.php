@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,6 +37,18 @@ class Users
      * @ORM\Column(type="string", length=255)
      */
     private $mdp;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Client")
+     * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
+     * 
+     */
+    private $clientid;
+
+    public function __construct()
+    {
+        $this->client = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -88,4 +102,20 @@ class Users
 
         return $this;
     }
+
+
+
+    public function getClientid(): ?Client
+    {
+        return $this->clientid;
+    }
+
+    public function setClientid(?Client $clientid): self
+    {
+        $this->clientid = $clientid;
+
+        return $this;
+    }
+
+
 }

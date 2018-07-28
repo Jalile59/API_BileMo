@@ -151,8 +151,19 @@ class AppFixtures extends Fixture{
         $user->setSurname('Do');
         $user->setMail('Jhone@gmail.com');
         $user->setMdp('123');
+        $user->setClientid($client);
         
         $manager->persist($user);
+        
+        $user2 = new Users();
+        
+        $user2->setName('Smith');
+        $user2->setSurname('Will');
+        $user2->setMail('Wille@gmail.com');
+        $user2->setMdp('123');
+        $user2->setClientid($client);
+        
+        $manager->persist($user2);
         
         $manager->flush();
         

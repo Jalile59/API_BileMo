@@ -30,6 +30,12 @@ class Client
      * @ORM\Column(type="string", length=255)
      */
     private $number;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Users")
+     * @ORM\JoinColumn(name="users_id", referencedColumnName="id")
+     */
+    private $userid;
 
     public function getId()
     {
@@ -68,6 +74,18 @@ class Client
     public function setNumber(int $number): self
     {
         $this->number = $number;
+
+        return $this;
+    }
+
+    public function getUserid(): ?Users
+    {
+        return $this->userid;
+    }
+
+    public function setUserid(?Users $userid): self
+    {
+        $this->userid = $userid;
 
         return $this;
     }
