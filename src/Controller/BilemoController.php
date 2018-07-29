@@ -8,7 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Users;
-use App\Entity\Client;
+
+use App\Entity\Client_Compagny;
 
 
 
@@ -140,7 +141,7 @@ class BilemoController extends Controller
         
        
         $em2 = $this->getDoctrine()->getManager();
-        $compagny = $em2->getRepository(Client::class)->findOneBy(array('compagnyName'=> $nameComapagny));
+        $compagny = $em2->getRepository(Client_Compagny::class)->findOneBy(array('compagnyName'=> $nameComapagny));
         
         
         if ($compagny){
@@ -250,7 +251,7 @@ class BilemoController extends Controller
             $nameComapagny = 'SARL SmoMobile';
             
             $em2 = $this->getDoctrine()->getManager();
-            $compagny = $em2->getRepository(Client::class)->findOneBy(array('compagnyName'=> $nameComapagny));
+            $compagny = $em2->getRepository(Client_Compagny::class)->findOneBy(array('compagnyName'=> $nameComapagny));
             
             
             if ($compagny){

@@ -39,7 +39,7 @@ class Users
     private $mdp;
     
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Client")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Client_Compagny")
      * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
      * 
      */
@@ -105,12 +105,12 @@ class Users
 
 
 
-    public function getClientId(): ?Client
+    public function getClientId(): ?Client_Compagny
     {
         return $this->client_id;
     }
 
-    public function setClientId(?Client $client_id): self
+    public function setClientId(?Client_Compagny $client_id): self
     {
         $this->client_id = $client_id;
 

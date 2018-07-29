@@ -14,6 +14,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\Entity\Product;
 use App\Entity\Client;
 use App\Entity\Users;
+use App\Entity\Client_Compagny;
 
 
 
@@ -137,7 +138,7 @@ class AppFixtures extends Fixture{
             
         }
         
-        $client = new Client();
+        $client = new Client_Compagny();
         $client->setCompagnyName('SARL SmoMobile');
         $client->setAdress('25 rue de la paix Paris');
         $client->setNumber('01456585');
@@ -155,7 +156,7 @@ class AppFixtures extends Fixture{
         
         $manager->persist($user);
         
-      /*  $user2 = new Users();
+        $user2 = new Users();
         
         $user2->setName('Smith');
         $user2->setSurname('Will');
@@ -163,7 +164,7 @@ class AppFixtures extends Fixture{
         $user2->setMdp('123');
         $user2->setClientid($client);
         
-        $manager->persist($user2);*/
+        $manager->persist($user2);
         
         $manager->flush();
         
