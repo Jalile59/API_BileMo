@@ -155,7 +155,7 @@ class AppFixtures extends Fixture{
         
         $manager->persist($user);
         
-        $user2 = new Users();
+      /*  $user2 = new Users();
         
         $user2->setName('Smith');
         $user2->setSurname('Will');
@@ -163,7 +163,7 @@ class AppFixtures extends Fixture{
         $user2->setMdp('123');
         $user2->setClientid($client);
         
-        $manager->persist($user2);
+        $manager->persist($user2);*/
         
         $manager->flush();
         

@@ -137,7 +137,7 @@ class BilemoController extends Controller
     public function getUserByNameCompany($nameComapagny){
         
         
- 
+        
        
         $em2 = $this->getDoctrine()->getManager();
         $compagny = $em2->getRepository(Client::class)->findOneBy(array('compagnyName'=> $nameComapagny));
@@ -149,9 +149,9 @@ class BilemoController extends Controller
             
             $em = $this->getDoctrine()->getManager();
             
-            $users = $em->getRepository(Users::class)->findBy(array('clientid'=>$idCompagny));
+            $users = $em->getRepository(Users::class)->findBy(array('client_id'=>$idCompagny));
             
-            var_dump($idCompagny);
+            
             if ($users){
                 
                 $data = $this->get('jms_serializer')->serialize($users,'json');
@@ -209,6 +209,98 @@ class BilemoController extends Controller
             $em->flush();
             
             return new Response('', Response::HTTP_CREATED);
+        }
+        
+        /**
+         * @Route("/deluser/{id}")
+         * @param int $id
+         * @return \Symfony\Component\HttpFoundation\Response
+         */
+        
+        public function supUser($id){
+            
+            $em = $this->getDoctrine()->getManager();
+            $user = $em->getRepository(Users::class)->find($id);
+            
+            if($user){
+                
+                $em->remove($user);
+                $em->flush();
+                
+                return new Response('', Response::HTTP_ACCEPTED);
+                
+            }else{
+                
+                return new Response('user not found', Response::HTTP_BAD_REQUEST);
+            }
+            
+
+            
+        }
+        /**
+         * @Route("/user/{id}")
+         * @param string $id
+         * @return \Symfony\Component\HttpFoundation\Response
+         */
+        
+        
+        public function getUserById($id){
+            
+            
+            $nameComapagny = 'SARL SmoMobile';
+            
+            $em2 = $this->getDoctrine()->getManager();
+            $compagny = $em2->getRepository(Client::class)->findOneBy(array('compagnyName'=> $nameComapagny));
+            
+            
+            if ($compagny){
+                
+                $idCompagny = $compagny->getId();
+                
+                $em = $this->getDoctrine()->getManager();
+                
+                $users = $em->getRepository(Users::class)->findOneBy(array(
+                    'id'=>$id,
+                    'client_id'=> $idCompagny                        
+                ));
+                
+                
+                if ($users){
+                    
+                    $data = $this->get('jms_serializer')->serialize($users,'json');
+                    
+                    $reponse = new Response($data);
+                    $reponse->headers->set('Content-Type', 'application/json');
+                    
+                    return $reponse;
+                    
+                }else{
+                    
+                    $error = ['error'=> 'Users not found'];
+                    
+                    $data = $this->get('jms_serializer')->serialize($error, 'json');
+                    
+                    $reponse = new Response($data);
+                    
+                    $reponse->headers->set('Content-Type', 'application/json');
+                    
+                    return $reponse;
+                }
+                
+            }else{
+                
+                $error = ['error'=> 'Client not found'];
+                
+                $data = $this->get('jms_serializer')->serialize($error, 'json');
+                
+                $reponse = new Response($data);
+                
+                $reponse->headers->set('Content-Type', 'application/json');
+                
+                return $reponse;
+                
+            }
+            
         }
     }
     

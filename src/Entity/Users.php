@@ -43,7 +43,7 @@ class Users
      * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
      * 
      */
-    private $clientid;
+    private $client_id;
 
     public function __construct()
     {
@@ -105,17 +105,19 @@ class Users
 
 
 
-    public function getClientid(): ?Client
+    public function getClientId(): ?Client
     {
-        return $this->clientid;
+        return $this->client_id;
     }
 
-    public function setClientid(?Client $clientid): self
+    public function setClientId(?Client $client_id): self
     {
-        $this->clientid = $clientid;
+        $this->client_id = $client_id;
 
         return $this;
     }
+
+ 
 
 
 }
