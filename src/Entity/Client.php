@@ -3,39 +3,40 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use FOS\OAuthServerBundle\Entity\Client as BaseClient;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Client_CompagnyRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ClientRepository")
  */
-class Client_Compagny
+class Client extends BaseClient
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $compagnyName;
+    protected $compagnyName;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $adress;
+    protected $adress;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $number;
+    protected $number;
     
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Users")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="users_id", referencedColumnName="id")
      */
-    private $userid;
+    protected $userid;
 
     public function getId()
     {
@@ -78,12 +79,12 @@ class Client_Compagny
         return $this;
     }
 
-    public function getUserid(): ?Users
+    public function getUserid(): ?User
     {
         return $this->userid;
     }
 
-    public function setUserid(?Users $userid): self
+    public function setUserid(?User $userid): self
     {
         $this->userid = $userid;
 

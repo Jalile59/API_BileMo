@@ -5,45 +5,49 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use FOS\UserBundle\Model\User as BaseUser;
+use FOS\OAuthServerBundle\Entity\Client as BaseClient;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UsersRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Table(name="user")
  */
-class Users
+class User extends BaseClient
+
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected  $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    protected  $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $surname;
+    protected  $surname;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $mail;
+    protected  $mail;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $mdp;
+    protected  $mdp;
     
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Client_Compagny")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Client")
      * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
      * 
      */
-    private $client_id;
+    protected $client_id;
 
     public function __construct()
     {
@@ -105,12 +109,12 @@ class Users
 
 
 
-    public function getClientId(): ?Client_Compagny
+    public function getClientId(): ?Client
     {
         return $this->client_id;
     }
 
-    public function setClientId(?Client_Compagny $client_id): self
+    public function setClientId(?Client $client_id): self
     {
         $this->client_id = $client_id;
 

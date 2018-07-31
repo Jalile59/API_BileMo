@@ -7,14 +7,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Response;
-use App\Entity\Users;
+use App\Entity\User;
 
-use App\Entity\Client_Compagny;
+
+use App\Entity\Client;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 
 
 class BilemoController extends Controller
 {
+    
+    public function getSecureResourceAction()
+    {
+        # this is it
+        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedException();
+        }
+        
+        // [...]
+    }
+    
     /**
      * @Route("/bilemo", name="bilemo")
      */
@@ -27,7 +40,7 @@ class BilemoController extends Controller
     }
     
     /**
-     * @Route("/mobiles", name="mobiles_create")
+     * @Route("POST/mobiles", name="mobiles_create")
      * @method({"POST"})
      * @param Request $request
      */
@@ -51,7 +64,7 @@ class BilemoController extends Controller
     }
     
     /**
-     * @Route("/ListMobile", name="liste_mobile")
+     * @Route("GET/ListMobile", name="liste_mobile")
      * 
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -90,7 +103,7 @@ class BilemoController extends Controller
             }
             
     /**
-     * @Route("/Mobile/{id}", name="detail_mobile")
+     * @Route("GET/Mobile/{id}", name="detail_mobile")
      * @param int $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -130,7 +143,7 @@ class BilemoController extends Controller
     }
     
     /**
-     * @Route("/listeUsers/{nameComapagny}", name="listeUsersByCompany")
+     * @Route("GET/listeUsers/{nameComapagny}", name="listeUsersByCompany")
      * @param string nameComapagny
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -141,7 +154,7 @@ class BilemoController extends Controller
         
        
         $em2 = $this->getDoctrine()->getManager();
-        $compagny = $em2->getRepository(Client_Compagny::class)->findOneBy(array('compagnyName'=> $nameComapagny));
+        $compagny = $em2->getRepository(Client::class)->findOneBy(array('compagnyName'=> $nameComapagny));
         
         
         if ($compagny){
@@ -150,7 +163,7 @@ class BilemoController extends Controller
             
             $em = $this->getDoctrine()->getManager();
             
-            $users = $em->getRepository(Users::class)->findBy(array('client_id'=>$idCompagny));
+            $users = $em->getRepository(User::class)->findBy(array('client_id'=>$idCompagny));
             
             
             if ($users){
@@ -190,7 +203,7 @@ class BilemoController extends Controller
 
         }
         /**
-         * @Route("/createUser", name="createUser")
+         * @Route("POST/user", name="createUser")
          * @method({"POST"})
          * @param Request $request
          * @return \Symfony\Component\HttpFoundation\Response
@@ -201,7 +214,7 @@ class BilemoController extends Controller
             $data = $request->getContent();
             
             
-            $user = $this->get('jms_serializer')->deserialize($data, Users::class,'json');
+            $user = $this->get('jms_serializer')->deserialize($data, User::class,'json');
             // manque idclient          
                        
             $em = $this->getDoctrine()->getManager();
@@ -213,7 +226,7 @@ class BilemoController extends Controller
         }
         
         /**
-         * @Route("/deluser/{id}")
+         * @Route("DEL/user/{id}", name="DELuser")
          * @param int $id
          * @return \Symfony\Component\HttpFoundation\Response
          */
@@ -221,7 +234,7 @@ class BilemoController extends Controller
         public function supUser($id){
             
             $em = $this->getDoctrine()->getManager();
-            $user = $em->getRepository(Users::class)->find($id);
+            $user = $em->getRepository(User::class)->find($id);
             
             if($user){
                 
@@ -239,7 +252,7 @@ class BilemoController extends Controller
             
         }
         /**
-         * @Route("/user/{id}")
+         * @Route("GET/user/{id}", name="detail_user")
          * @param string $id
          * @return \Symfony\Component\HttpFoundation\Response
          */
@@ -251,7 +264,7 @@ class BilemoController extends Controller
             $nameComapagny = 'SARL SmoMobile';
             
             $em2 = $this->getDoctrine()->getManager();
-            $compagny = $em2->getRepository(Client_Compagny::class)->findOneBy(array('compagnyName'=> $nameComapagny));
+            $compagny = $em2->getRepository(Client::class)->findOneBy(array('compagnyName'=> $nameComapagny));
             
             
             if ($compagny){
@@ -260,7 +273,7 @@ class BilemoController extends Controller
                 
                 $em = $this->getDoctrine()->getManager();
                 
-                $users = $em->getRepository(Users::class)->findOneBy(array(
+                $users = $em->getRepository(User::class)->findOneBy(array(
                     'id'=>$id,
                     'client_id'=> $idCompagny                        
                 ));
