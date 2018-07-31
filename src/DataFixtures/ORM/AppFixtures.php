@@ -12,8 +12,8 @@ namespace App\DataFixtures\ORM;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\Entity\Product;
+use App\Entity\User;
 use App\Entity\Client;
-use App\Entity\Users;
 
 
 
@@ -145,18 +145,41 @@ class AppFixtures extends Fixture{
         $manager->persist($client);
         
         
-        $user = new Users();
+  /*      $user = new User();
         
         $user->setName('Jhon');
         $user->setSurname('Do');
         $user->setMail('Jhone@gmail.com');
         $user->setMdp('123');
+        $user->setClientid($client);
         
         $manager->persist($user);
         
+        $user2 = new User();
+        
+        $user2->setName('Smith');
+        $user2->setSurname('Will');
+        $user2->setMail('Wille@gmail.com');
+        $user2->setMdp('123');
+        $user2->setClientid($client);
+        
+        $manager->persist($user2);
+        
         $manager->flush();
         
+        */
         
+        $clientManager = $this->container->get('fos_oauth_server.client_manager.default');
+        $client = $clientmanager->createClient();
+        $client->setRedirectUris(array('http://www.exemple.com'));
+        $client->setAllowedGrantTypes(array('token', 'authorization_code'));
+        $clientManager->updateClient($client);
+        
+        return $this->redirect($this->generateUrl('fos_oauth_server_authorize', array(
+            'client_id'     => $client->getPublicId(),
+            'redirect_uri'  => 'http://www.exemple.com',
+            'response_type' => 'code'
+        )));
     }
     
 }

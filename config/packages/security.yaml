@@ -1,0 +1,20 @@
+# app/config/security.yml
+security:
+    firewalls:
+        oauth_token:
+            pattern:    ^/oauth/v2/token
+            security:   false
+
+        oauth_authorize:
+            pattern:    ^/oauth/v2/auth
+            security:   false
+            # Add your favorite authentication process here
+
+        api:
+            pattern:    ^/api
+            fos_oauth:  true
+            stateless:  true
+            anonymous:  false # can be omitted as its default value
+
+    access_control:
+        - { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ] }
