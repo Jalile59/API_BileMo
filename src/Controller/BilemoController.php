@@ -40,7 +40,7 @@ class BilemoController extends Controller
     }
     
     /**
-     * @Route("POST/mobiles", name="mobiles_create")
+     * @Route("/api/mobiles", name="mobiles_create")
      * @method({"POST"})
      * @param Request $request
      */
@@ -64,7 +64,7 @@ class BilemoController extends Controller
     }
     
     /**
-     * @Route("GET/ListMobile", name="liste_mobile")
+     * @Route("api/ListMobile", name="liste_mobile")
      * 
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -315,6 +315,28 @@ class BilemoController extends Controller
                 
             }
             
+           
+        }
+        
+    /**
+     * @route("testclient/", name="testclient")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+        
+        public function testclient(){
+         
+            $clientManager = $this->container->get('fos_oauth_server.client_manager.default');
+            $client = $clientmanager->createClient();
+            $client->setRedirectUris(array('http://www.exemple.com'));
+            $client->setAllowedGrantTypes(array('token', 'authorization_code'));
+            $clientManager->updateClient($client);
+            
+            return $this->redirect($this->generateUrl('fos_oauth_server_authorize', array(
+                'client_id'     => $client->getPublicId(),
+                'redirect_uri'  => 'http://www.exemple.com',
+                'response_type' => 'code'
+                
+            )));
         }
     }
     

@@ -169,7 +169,7 @@ class AppFixtures extends Fixture{
         
         */
         
-        $clientManager = $this->container->get('fos_oauth_server.client_manager.default');
+        $clientManager = $this->getcontainer->get('fos_oauth_server.client_manager.default');
         $client = $clientmanager->createClient();
         $client->setRedirectUris(array('http://www.exemple.com'));
         $client->setAllowedGrantTypes(array('token', 'authorization_code'));
