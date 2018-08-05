@@ -9,7 +9,8 @@ use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
 
-
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\View;
 use App\Entity\Client;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -337,6 +338,21 @@ class BilemoController extends Controller
                 'response_type' => 'code'
                 
             )));
+        }
+        
+        /**
+         * @Get(
+         *     path = "api/product/{id}",
+         *     name = "app_product_show",
+         *     requirements = {"id"="\d+"}
+         * )
+         * @View
+         */
+        public function showAction(Product $product)
+        {
+            
+               
+          return $product;  
         }
     }
     

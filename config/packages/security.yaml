@@ -3,14 +3,7 @@ security:
     providers:
         in_memory:
             memory:
-                users:
-                    ryan:
-                        password: ryanpass
-                        roles: 'ROLE_USER'
-                    admin:
-                        password: kitten
-                        roles: 'ROLE_ADMIN'
-    
+
     firewalls:
         oauth_token:
             pattern:    ^/oauth/v2/token
