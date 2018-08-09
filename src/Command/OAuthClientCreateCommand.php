@@ -60,8 +60,8 @@ class OAuthClientCreateCommand extends ContainerAwareCommand
              
              */
         $output->writeln('Congrats ! You\'ve been emailed your API credentials.');
-        $output->writeln('client_id' . $client->getPublicId());
-        $output->writeln('client_secret' . $client->getSecret());
+        $output->writeln('client_id ' . $client->getPublicId());
+        $output->writeln('client_secret ' . $client->getSecret());
         
     }
 }
