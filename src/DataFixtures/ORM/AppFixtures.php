@@ -137,12 +137,6 @@ class AppFixtures extends Fixture{
             
         }
         
-        $client = new Client();
-        $client->setCompagnyName('SARL SmoMobile');
-        $client->setAdress('25 rue de la paix Paris');
-        $client->setNumber('01456585');
-        
-        $manager->persist($client);
         
         
   /*      $user = new User();
@@ -169,6 +163,16 @@ class AppFixtures extends Fixture{
         
         */
         
+        
+        $user = New User();
+        
+        $user->setUsername('Jalile');
+        $user->setEmail('jal@gmail.com');
+        $user->setPassword('123');
+        
+        $manager->persist($user);
+        $manager->flush();
+        /*
         $clientManager = $this->getcontainer->get('fos_oauth_server.client_manager.default');
         $client = $clientmanager->createClient();
         $client->setRedirectUris(array('http://www.exemple.com'));
@@ -180,6 +184,7 @@ class AppFixtures extends Fixture{
             'redirect_uri'  => 'http://www.exemple.com',
             'response_type' => 'code'
         )));
+        */
     }
     
 }
