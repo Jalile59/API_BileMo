@@ -3,7 +3,7 @@ fos_rest:
         enabled: true
     view:
         formats: { json: true, xml: false, rss: false }
-        view_response_listener: true
+        view_response_listener: true 
 
     serializer:
         serialize_null: true 

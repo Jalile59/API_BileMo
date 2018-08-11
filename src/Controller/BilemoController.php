@@ -348,9 +348,12 @@ class BilemoController extends Controller
          * )
          * @View
          */
-        public function showAction(Product $product)
+        public function showAction($id)
         {
+         
+            $em = $this->getDoctrine()->getManager();
             
+            $product = $em->getRepository(Product::class)->find($id);
                
           return $product;  
         }
