@@ -13,14 +13,16 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *      "self",
  *      href = @Hateoas\Route(
  *          "app_product_show",
- *          parameters = { "id" = "expr(object.getId())" }
+ *          parameters = { "id" = "expr(object.getId())" },
+ *      absolute = true
  *      )
  * )
  * 
  * @Hateoas\Relation(
  *      "create",
  *      href = @Hateoas\Route(
- *          "app_product_show",
+ *          "app_product_create",
+ *      absolute = true
  *          
  *      )
  * )

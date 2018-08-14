@@ -29,4 +29,8 @@ class AccessToken extends BaseAccessToken
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $user;
+    
+    
+    
+    
 }

@@ -21,6 +21,14 @@ class User extends BaseUser
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="id")
+     * 
+     */
+    protected $userParent;
+    
 
     /**
      * Get id
@@ -30,6 +38,15 @@ class User extends BaseUser
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function getUserParent() {
+        
+        return $this->userParent;
+    }
+    
+    public function setUserParent( $iduser) {
+        $this->userParent = $iduser;
     }
 
 }
