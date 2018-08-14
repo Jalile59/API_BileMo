@@ -9,7 +9,9 @@ use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
 
-
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\View;
 use App\Entity\Client;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -18,15 +20,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class BilemoController extends Controller
 {
     
-    public function getSecureResourceAction()
-    {
-        # this is it
-        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            throw new AccessDeniedException();
-        }
-        
-        // [...]
-    }
+
     
     /**
      * @Route("/bilemo", name="bilemo")
@@ -40,12 +34,15 @@ class BilemoController extends Controller
     }
     
     /**
-     * @Route("/api/mobiles", name="mobiles_create")
-     * @method({"POST"})
-     * @param Request $request
+     * @Post(
+     *  path="/api/product",
+     *  name="app_product_create"
+     * )
+     * 
+     * @View
      */
     
-    public function post (Request $request) {
+    public function createProduct (Request $request) {
         
         
        $data = $request->getContent();
@@ -64,9 +61,36 @@ class BilemoController extends Controller
     }
     
     /**
-     * @Route("api/ListMobile", name="liste_mobile")
-     * 
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Get(
+     *     path = "api/product/{id}",
+     *     name = "app_product_show",
+     *     requirements = {"id"="\d+"}
+     * )
+     * @View
+     */
+    public function getproduct($id)
+    {
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        $product = $em->getRepository(Product::class)->find($id);
+        
+        if ($product){
+            
+            return $product;
+        }else{
+            
+            return new Response('product no found', Response::HTTP_BAD_REQUEST);
+        }
+        
+        
+    }
+    
+    /**
+     * @Get(
+     *     path = "/api/products",
+     *     name = "app_produc_getall"
+     * )
      */
     
     public function getMobiles() {
@@ -102,45 +126,6 @@ class BilemoController extends Controller
         
             }
             
-    /**
-     * @Route("GET/Mobile/{id}", name="detail_mobile")
-     * @param int $id
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    
-    public function getmobile($id){
-        
-        
-        
-        $em = $this->getDoctrine()->getManager();
-        
-        $mobile = $em->getRepository(Product::class)->find($id);
-        
-        if($mobile){
-            
-            $data = $this->get('serializer')->serialize($mobile, 'json');
-            
-            $reponse = new Response($data);
-            
-            $reponse->headers->set('Content-Type', 'application/json');
-            
-            return $reponse;
-            
-        }else{
-            
-            $error = ['error'=> 'product not found'];
-            
-            $data = $this->get('serializer')->serialize($error, 'json');
-            
-            $reponse = new Response($data);
-            
-            $reponse->headers->set('Content-Type', 'application/json');
-            
-            return $reponse;
-        }
-        
-        
-    }
     
     /**
      * @Route("GET/listeUsers/{nameComapagny}", name="listeUsersByCompany")
@@ -203,13 +188,13 @@ class BilemoController extends Controller
 
         }
         /**
-         * @Route("POST/user", name="createUser")
+         * @Route("api/user", name="createUser")
          * @method({"POST"})
          * @param Request $request
          * @return \Symfony\Component\HttpFoundation\Response
          */
         
-        public function putUser(Request $request){
+        public function User(Request $request){
             
             $data = $request->getContent();
             
@@ -338,6 +323,8 @@ class BilemoController extends Controller
                 
             )));
         }
+        
+
     }
     
     
