@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -132,20 +132,14 @@ class AppFixtures extends Fixture{
             $product->setRam($ram[$i]);
             
             $manager->persist($product);
-           
+            
             
             
         }
         
-        $client = new Client();
-        $client->setCompagnyName('SARL SmoMobile');
-        $client->setAdress('25 rue de la paix Paris');
-        $client->setNumber('01456585');
-        
-        $manager->persist($client);
         
         
-  /*      $user = new User();
+        /*      $user = new User();
         
         $user->setName('Jhon');
         $user->setSurname('Do');
@@ -169,17 +163,28 @@ class AppFixtures extends Fixture{
         
         */
         
-        $clientManager = $this->getcontainer->get('fos_oauth_server.client_manager.default');
-        $client = $clientmanager->createClient();
-        $client->setRedirectUris(array('http://www.exemple.com'));
-        $client->setAllowedGrantTypes(array('token', 'authorization_code'));
-        $clientManager->updateClient($client);
         
-        return $this->redirect($this->generateUrl('fos_oauth_server_authorize', array(
-            'client_id'     => $client->getPublicId(),
-            'redirect_uri'  => 'http://www.exemple.com',
-            'response_type' => 'code'
-        )));
+        $user = New User();
+        
+        $user->setUsername('Jalile');
+        $user->setEmail('jal@gmail.com');
+        $user->setPassword('123');
+        
+        $manager->persist($user);
+        $manager->flush();
+        /*
+         $clientManager = $this->getcontainer->get('fos_oauth_server.client_manager.default');
+         $client = $clientmanager->createClient();
+         $client->setRedirectUris(array('http://www.exemple.com'));
+         $client->setAllowedGrantTypes(array('token', 'authorization_code'));
+         $clientManager->updateClient($client);
+         
+         return $this->redirect($this->generateUrl('fos_oauth_server_authorize', array(
+         'client_id'     => $client->getPublicId(),
+         'redirect_uri'  => 'http://www.exemple.com',
+         'response_type' => 'code'
+         )));
+         */
     }
     
 }

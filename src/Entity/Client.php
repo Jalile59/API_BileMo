@@ -33,8 +33,8 @@ class Client extends BaseClient
     protected $number;
     
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(name="users_id", referencedColumnName="id")
+     * @ORM\OnetoOne(targetEntity="App\Entity\User")
+     * 
      */
     protected $userid;
 

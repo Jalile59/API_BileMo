@@ -12,6 +12,8 @@ use App\Entity\User;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Controller\Annotations\Put;
+
 use App\Entity\Client;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -34,7 +36,7 @@ class BilemoController extends Controller
     }
     
     /**
-     * @Post(
+     * @Put(
      *  path="/api/product",
      *  name="app_product_create"
      * )
@@ -187,28 +189,7 @@ class BilemoController extends Controller
         }
 
         }
-        /**
-         * @Route("api/user", name="createUser")
-         * @method({"POST"})
-         * @param Request $request
-         * @return \Symfony\Component\HttpFoundation\Response
-         */
-        
-        public function User(Request $request){
-            
-            $data = $request->getContent();
-            
-            
-            $user = $this->get('jms_serializer')->deserialize($data, User::class,'json');
-            // manque idclient          
-                       
-            $em = $this->getDoctrine()->getManager();
-            
-            $em->persist($user);
-            $em->flush();
-            
-            return new Response('', Response::HTTP_CREATED);
-        }
+       
         
         /**
          * @Route("DEL/user/{id}", name="DELuser")
@@ -303,25 +284,37 @@ class BilemoController extends Controller
            
         }
         
-    /**
-     * @route("testclient/", name="testclient")
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
+
         
-        public function testclient(){
-         
-            $clientManager = $this->container->get('fos_oauth_server.client_manager.default');
-            $client = $clientmanager->createClient();
-            $client->setRedirectUris(array('http://www.exemple.com'));
-            $client->setAllowedGrantTypes(array('token', 'authorization_code'));
-            $clientManager->updateClient($client);
+        /**
+         * @Get(
+         *  path = "/api/client/{id}",
+         *  name = "getclient_test"
+         * )
+         * 
+         * @View
+         */
+        
+        public function getclientpass($id){
             
-            return $this->redirect($this->generateUrl('fos_oauth_server_authorize', array(
-                'client_id'     => $client->getPublicId(),
-                'redirect_uri'  => 'http://www.exemple.com',
-                'response_type' => 'code'
+            $em = $this->getDoctrine()->getManager();
+            $client = $em->getRepository(Client::class)->find($id);
+            
+            $publicId = $client->getPublicId();
+            $privateId = $client->getSecret();
+            
+            $info = ['publicid' => $publicId,
+                     'privateid'=> $privateId
+            ];
+            
+            if($client){
                 
-            )));
+                return $info;
+            }else{
+                
+                return new Response('error client', Response::HTTP_BAD_REQUEST);
+            }
+            
         }
         
 
