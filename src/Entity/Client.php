@@ -33,7 +33,7 @@ class Client extends BaseClient
     protected $number;
     
     /**
-     * @ORM\OnetoOne(targetEntity="App\Entity\User")
+     * @ORM\OneToOne(targetEntity="App\Entity\User")
      * 
      */
     protected $userid;

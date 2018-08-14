@@ -107,9 +107,18 @@ class UserController extends Controller
             $em->persist($client);
             $em->flush();
             
+            $message = (new \Swift_Message()) 
+            ->setSubject('Inscription API')
+            ->setFrom('SnowTrick@hotmail.com')
+            ->setTo('jal.djellouli@gmail.com')
+            ->setBody('test');
+            
+           
+            
+            $this->get('mailer')->send($message);
+
             
             
-        
        
         return new Response('okk', Response::HTTP_ACCEPTED);
     }
