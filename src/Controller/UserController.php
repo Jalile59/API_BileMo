@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
 
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -51,6 +52,7 @@ class UserController extends Controller
      *  name = "app_user_add"
      * )
      */
+    
     public function createlUser(Request $request) {
         
         
@@ -68,14 +70,28 @@ class UserController extends Controller
         
         //dump($idAdmin);
         
-       
+       ///////////////récuperation contenu/////////////////////////
         
         $data = $request->getContent();
         $datas = json_decode($data, true);
         
+        //////////////// vérification name or email déja utilisé
         
+        
+        
+        $em_mail = $this->getDoctrine()->getManager();
+        $mail =$em_mail->getRepository(User::class)->findOneBy(array('email'=>$datas['email']));
+        
+        $em_name = $this->getDoctrine()->getManager();
+        $name =$em_name->getRepository(User::class)->findOneBy(array('username'=>$datas['username']));
+        
+        if($mail or $mail){
+            
+            return new Response('Username or Mail is already used.', Response::HTTP_BAD_REQUEST);
+        }else{
         
         //////////////// create user //////////////////////////////////////
+        
         
         $userManager = $this->get('fos_user.user_manager');
                
@@ -88,7 +104,7 @@ class UserController extends Controller
         $user->setUserParent($userParent);
        
         
-        $userManager->updateUser($user);
+        
         
         ////////////////// create client ////////////////////////////////
         
@@ -104,7 +120,13 @@ class UserController extends Controller
             ));
             
             
+            
+           
             $em->persist($client);
+            
+            $user->setClient($client);
+            $userManager->updateUser($user);
+            
             $em->flush();
             
             $message = (new \Swift_Message()) 
@@ -120,7 +142,41 @@ class UserController extends Controller
             
             
        
-        return new Response('okk', Response::HTTP_ACCEPTED);
+        return new Response('success new user.', Response::HTTP_ACCEPTED);
+        }
+    }
+    
+    /**
+     * @Delete(
+     *      
+     *      path ="/api/deleteUser/{id}",
+     *      name = "suppresion_user"
+     * )
+     * 
+     * @param integer $id
+     */
+    
+    public function deluser($id) {
+        
+       $em = $this->getDoctrine()->getManager();
+       $em2 = $this->getDoctrine()->getManager();
+       
+       $user = $em->getRepository(User::class)->find($id);
+       $client = $em2->getRepository(Client::class)->findOneBy(array('userid'=>$user->getId()));
+       
+       if ($client){
+       
+           $em->remove($client);
+           $em->flush();
+           
+           return new Response('user removed', Response::HTTP_ACCEPTED);          
+           
+       }else{
+           
+           return new Response('User not found', Response::HTTP_BAD_REQUEST);
+       }
+       
+
     }
     
     

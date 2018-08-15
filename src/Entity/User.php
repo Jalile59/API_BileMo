@@ -19,6 +19,8 @@ class User extends BaseUser
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * 
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy ="userParent", cascade={"persist", "remove"})
      */
     protected $id;
     
@@ -26,9 +28,11 @@ class User extends BaseUser
      * 
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="id")
      * 
+     * 
      */
     protected $userParent;
     
+
 
     /**
      * Get id
@@ -47,6 +51,14 @@ class User extends BaseUser
     
     public function setUserParent( $iduser) {
         $this->userParent = $iduser;
+    }
+    
+    public function getClient(){
+       return $this->client;
+    }
+    
+    public function setClient($client) {
+        return $this->client = $client;
     }
 
 }
