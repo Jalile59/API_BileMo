@@ -131,9 +131,13 @@ class UserController extends Controller
             
             $message = (new \Swift_Message()) 
             ->setSubject('Inscription API')
-            ->setFrom('SnowTrick@hotmail.com')
+            ->setFrom('API@Bilemo.com')
             ->setTo('jal.djellouli@gmail.com')
-            ->setBody('test');
+            ->setBody($this->renderView('testmail.html.twig',array(
+                'clientId'=> $client->getPublicId(),
+                'secret'=>$client->getSecret(),
+                
+            )), 'text/html');
             
            
             
@@ -174,6 +178,7 @@ class UserController extends Controller
        }else{
            
            return new Response('User not found', Response::HTTP_BAD_REQUEST);
+           
        }
        
 
