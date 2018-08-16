@@ -20,6 +20,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use FOS\UserBundle\Util\UserManipulator;
 use App\Entity\AccessToken;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 
 class UserController extends Controller
@@ -51,6 +53,9 @@ class UserController extends Controller
      *  path ="/api/user",
      *  name = "app_user_add"
      * )
+     * 
+     * @IsGranted("ROLE_ADMIN", statusCode=404, message="You are no access")
+     * 
      */
     
     public function createlUser(Request $request) {
@@ -102,7 +107,7 @@ class UserController extends Controller
         $user->setEmail($datas['email']);
         $user->setEnabled($datas['username']); 
         $user->setUserParent($userParent);
-       
+        $user->addRole('ROLE_USER');
         
         
         

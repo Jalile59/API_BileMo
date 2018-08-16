@@ -17,7 +17,8 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use App\Entity\Client;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class BilemoController extends Controller
 {
@@ -40,6 +41,8 @@ class BilemoController extends Controller
      *  path="/api/product",
      *  name="app_product_create"
      * )
+     * 
+     * @IsGranted("ROLE_SUPER_ADMIN", statusCode=404, message="You are no access")
      * 
      * @View
      */
