@@ -19,6 +19,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\service\Tools;
 
 class BilemoController extends Controller
 {
@@ -291,32 +292,20 @@ class BilemoController extends Controller
         
         /**
          * @Get(
-         *  path = "/api/client/{id}",
+         *  path = "/api/client",
          *  name = "getclient_test"
          * )
          * 
          * @View
          */
         
-        public function getclientpass($id){
+        public function getclientpass(){
             
-            $em = $this->getDoctrine()->getManager();
-            $client = $em->getRepository(Client::class)->find($id);
+            $message = $this->container->get(Tools::class);
             
-            $publicId = $client->getPublicId();
-            $privateId = $client->getSecret();
+            $info = $message->op();
             
-            $info = ['publicid' => $publicId,
-                     'privateid'=> $privateId
-            ];
-            
-            if($client){
-                
-                return $info;
-            }else{
-                
-                return new Response('error client', Response::HTTP_BAD_REQUEST);
-            }
+           return $info;
             
         }
         
