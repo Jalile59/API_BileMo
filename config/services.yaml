@@ -50,3 +50,7 @@ services:
     OAuthServerBundle\Model\RefreshTokenManagerInterface:
         alias: fos_oauth_server.refresh_token_manager.default
         public: true
+        
+    tolls.service:
+        class: App\service\Tolls
+        arguments: [ "@doctrine.orm.default_entity_manager" ]
