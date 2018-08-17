@@ -162,16 +162,41 @@ class UserController extends Controller
      *      name = "suppresion_user"
      * )
      * 
-     * @param integer $id
+     * 
      */
     
     public function deluser($id) {
         
-       $em = $this->getDoctrine()->getManager();
-       $em2 = $this->getDoctrine()->getManager();
+        // verfier l'user avant de supprimer
+        
+        if(is_numeric($id)){
+            
+            $em = $this->getDoctrine()->getManager();
+            $em2 = $this->getDoctrine()->getManager();
+            
+            $user = $em->getRepository(User::class)->find($id);
+            
+            if(!$user){
+                return new Response('User not found', Response::HTTP_BAD_REQUEST);
+            }
+            
+            $client = $em2->getRepository(Client::class)->findOneBy(array('userid'=>$user->getId()));
+            
+        }else{
+            
+            $em = $this->getDoctrine()->getManager();
+            $em2 = $this->getDoctrine()->getManager();
+            
+            $user = $em->getRepository(User::class)->findOneBy(array('email'=> $id));
+            
+            if(!$user){
+                return new Response('User not found', Response::HTTP_BAD_REQUEST);
+            }
+            
+            $client = $em2->getRepository(Client::class)->findOneBy(array('userid'=>$user->getId()));
+        }
+        
        
-       $user = $em->getRepository(User::class)->find($id);
-       $client = $em2->getRepository(Client::class)->findOneBy(array('userid'=>$user->getId()));
        
        if ($client){
        
