@@ -99,7 +99,7 @@ class BilemoController extends Controller
      * )
      */
     
-    public function getMobiles() {
+    public function getAllProducts() {
         
         
         $em =$this->getDoctrine()->getManager();
@@ -114,201 +114,18 @@ class BilemoController extends Controller
             
             return $response;
             
-                       
+                    
         }else{
-            
-            $error = ['error'=> 'product not found'];
-            
-            $data = $this->get('serializer')->serialize($error, 'json');
-            
-            $reponse = new Response($data);
-            
-            $reponse->headers->set('Content-Type', 'application/json');
-            
-            return $reponse;
-        }
-        
-
-        
-            }
-            
-    
-    /**
-     * @Route("GET/listeUsers/{nameComapagny}", name="listeUsersByCompany")
-     * @param string nameComapagny
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    
-    public function getUserByNameCompany($nameComapagny){
-        
-        
-        
-       
-        $em2 = $this->getDoctrine()->getManager();
-        $compagny = $em2->getRepository(Client::class)->findOneBy(array('compagnyName'=> $nameComapagny));
-        
-        
-        if ($compagny){
-            
-            $idCompagny = $compagny->getId();
-            
-            $em = $this->getDoctrine()->getManager();
-            
-            $users = $em->getRepository(User::class)->findBy(array('client_id'=>$idCompagny));
-            
-            
-            if ($users){
-                
-                $data = $this->get('jms_serializer')->serialize($users,'json');
-                
-                $reponse = new Response($data);
-                $reponse->headers->set('Content-Type', 'application/json');
-                
-                return $reponse;
-            }else{
-                
-                $error = ['error'=> 'Users not found'];
-                
-                $data = $this->get('jms_serializer')->serialize($error, 'json');
-                
-                $reponse = new Response($data);
-                
-                $reponse->headers->set('Content-Type', 'application/json');
-                
-                return $reponse;
-            }
-            
-        }else{
-            
-            $error = ['error'=> 'Client not found'];
-            
-            $data = $this->get('jms_serializer')->serialize($error, 'json');
-            
-            $reponse = new Response($data);
-            
-            $reponse->headers->set('Content-Type', 'application/json');
-            
-            return $reponse;
-            
-        }
-
-        }
-       
-        
-        /**
-         * @Route("DEL/user/{id}", name="DELuser")
-         * @param int $id
-         * @return \Symfony\Component\HttpFoundation\Response
-         */
-        
-        public function supUser($id){
-            
-            $em = $this->getDoctrine()->getManager();
-            $user = $em->getRepository(User::class)->find($id);
-            
-            if($user){
-                
-                $em->remove($user);
-                $em->flush();
-                
-                return new Response('', Response::HTTP_ACCEPTED);
-                
-            }else{
-                
-                return new Response('user not found', Response::HTTP_BAD_REQUEST);
-            }
-            
-
-            
-        }
-        /**
-         * @Route("GET/user/{id}", name="detail_user")
-         * @param string $id
-         * @return \Symfony\Component\HttpFoundation\Response
-         */
-        
-        
-        public function getUserById($id){
-            
-            
-            $nameComapagny = 'SARL SmoMobile';
-            
-            $em2 = $this->getDoctrine()->getManager();
-            $compagny = $em2->getRepository(Client::class)->findOneBy(array('compagnyName'=> $nameComapagny));
-            
-            
-            if ($compagny){
-                
-                $idCompagny = $compagny->getId();
-                
-                $em = $this->getDoctrine()->getManager();
-                
-                $users = $em->getRepository(User::class)->findOneBy(array(
-                    'id'=>$id,
-                    'client_id'=> $idCompagny                        
-                ));
-                
-                
-                if ($users){
-                    
-                    $data = $this->get('jms_serializer')->serialize($users,'json');
-                    
-                    $reponse = new Response($data);
-                    $reponse->headers->set('Content-Type', 'application/json');
-                    
-                    return $reponse;
-                    
-                }else{
-                    
-                    $error = ['error'=> 'Users not found'];
-                    
-                    $data = $this->get('jms_serializer')->serialize($error, 'json');
-                    
-                    $reponse = new Response($data);
-                    
-                    $reponse->headers->set('Content-Type', 'application/json');
-                    
-                    return $reponse;
-                }
-                
-            }else{
-                
-                $error = ['error'=> 'Client not found'];
-                
-                $data = $this->get('jms_serializer')->serialize($error, 'json');
-                
-                $reponse = new Response($data);
-                
-                $reponse->headers->set('Content-Type', 'application/json');
-                
-                return $reponse;
-                
-            }
             
            
+            return new Response('product not found', Response::HTTP_BAD_REQUEST);
         }
         
 
         
-        /**
-         * @Get(
-         *  path = "/api/client",
-         *  name = "getclient_test"
-         * )
-         * 
-         * @View
-         */
-        
-        public function getclientpass(Tools $message){
+            }
             
-                       
-            $info = $message->op();
-            $user = $message->GetUserByToken();
-            
-            return $user;
-            
-        }
-        
+
 
     }
     

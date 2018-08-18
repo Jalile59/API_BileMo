@@ -29,17 +29,32 @@ class UserController extends Controller
      * @View
      */
     
-    public function showUser($id) {
+    public function showUser($id, Request $request, Tools $tools) {
         
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->find($id);
+        $token = $tools->getContentToken($request);
+        $user = $tools->getUserByToken($token);
         
-        if($user){
-            return $user;
+        $access = $tools->checkPrivilegeDeleted($user, $token);
+        
+        if($access){
+            
+            $em = $this->getDoctrine()->getManager();
+            $user = $em->getRepository(User::class)->find($id);
+            
+            if($user){
+                return $user;
+            }else{
+                
+                return new Response('user not found !', RedirectResponse::HTTP_BAD_REQUEST);
+            }
+            
         }else{
             
-            return new Response('user not found !', RedirectResponse::HTTP_BAD_REQUEST);
+            return new Response('access denied.', RedirectResponse::HTTP_BAD_REQUEST);
+            
         }
+        
+
         
     }
     
@@ -49,7 +64,7 @@ class UserController extends Controller
      *  name = "app_user_add"
      * )
      * 
-     * @IsGranted("ROLE_ADMIN", statusCode=404, message="You are no access")
+     * @IsGranted("ROLE_SUPER_ADMIN", statusCode=404, message="You are no access")
      * 
      */
     
@@ -85,7 +100,7 @@ class UserController extends Controller
         $em_name = $this->getDoctrine()->getManager();
         $name =$em_name->getRepository(User::class)->findOneBy(array('username'=>$datas['username']));
         
-        if($mail or $mail){
+        if($mail or $name){
             
             return new Response('Username or Mail is already used.', Response::HTTP_BAD_REQUEST);
         }else{
