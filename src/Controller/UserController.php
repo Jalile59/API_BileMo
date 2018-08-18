@@ -222,6 +222,29 @@ class UserController extends Controller
         }
             
         }
+        
+        /**
+         * @Get(
+         *  path = "/api/listinguser",
+         *  name = "Listing_User_By_Client"
+         * )
+         * @View
+         * 
+         * 
+         * @IsGranted("ROLE_ADMIN", statusCode=404, message="You are no access")
+         */
+        
+        public function getListUserByclient(Request $request, Tools $tools) {
+           
+            $token = $tools->getContentToken($request);
+            $user = $tools->getUserByToken($token);
+            
+            $em = $this->getDoctrine()->getManager();
+            $listeUser = $em->getRepository(User::class)->findBy(array('userParent'=>$user->getId()));
+            
+                        
+            return $listeUser;
+        }
        
        
     
