@@ -1,14 +1,11 @@
 <?php
-
 namespace App\Controller;
-
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
-
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Put;
@@ -19,11 +16,9 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use FOS\UserBundle\Util\UserManipulator;
 use App\Entity\AccessToken;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-
-
+use App\service\Tools;
 class UserController extends Controller
 {
     /**
@@ -147,7 +142,6 @@ class UserController extends Controller
            
             
             $this->get('mailer')->send($message);
-
             
             
        
@@ -165,59 +159,71 @@ class UserController extends Controller
      * 
      */
     
-    public function deluser($id) {
+    public function deluser($id, Tools $tools, Request $request) {
         
-        // verfier l'user avant de supprimer
+        $idExist = $tools->checkUsertExist($id); //Vérifie si l'id reçu existe
+        $token = $tools->getContentToken($request);
         
-        if(is_numeric($id)){
+        
+       
+        
+    
+        
+        //die;
+        if($idExist){
             
-            $em = $this->getDoctrine()->getManager();
-            $em2 = $this->getDoctrine()->getManager();
-            
-            $user = $em->getRepository(User::class)->find($id);
-            
-            if(!$user){
-                return new Response('User not found', Response::HTTP_BAD_REQUEST);
+            if(is_numeric($id)){    // si id est int requête par findByIdn sinon findOneby 
+                
+                $em = $this->getDoctrine()->getManager();
+                $em2 = $this->getDoctrine()->getManager();
+                
+                $user = $em->getRepository(User::class)->find($id);
+                                
+                $client = $em2->getRepository(Client::class)->findOneBy(array('userid'=>$user->getId()));
+                
+            }else{
+                
+                $em = $this->getDoctrine()->getManager();
+                $em2 = $this->getDoctrine()->getManager();
+                
+                $user = $em->getRepository(User::class)->findOneBy(array('email'=> $id));
+                
+                $client = $em2->getRepository(Client::class)->findOneBy(array('userid'=>$user->getId()));
             }
-            
-            $client = $em2->getRepository(Client::class)->findOneBy(array('userid'=>$user->getId()));
             
         }else{
             
-            $em = $this->getDoctrine()->getManager();
-            $em2 = $this->getDoctrine()->getManager();
-            
-            $user = $em->getRepository(User::class)->findOneBy(array('email'=> $id));
-            
-            if(!$user){
-                return new Response('User not found', Response::HTTP_BAD_REQUEST);
-            }
-            
-            $client = $em2->getRepository(Client::class)->findOneBy(array('userid'=>$user->getId()));
+            return new Response('User not found', Response::HTTP_BAD_REQUEST);
         }
         
+        // verfier l'user avant de supprimer
+        
+        
+        $userParent = $tools->checkPrivilegeDeleted($user, $token);
+        
+        if($userParent){
+            
+            if ($client){
+                
+                $em->remove($client);
+                $em->flush();
+                
+                return new Response('user removed', Response::HTTP_ACCEPTED);
+                
+            }else{
+                
+                return new Response('User not found', Response::HTTP_BAD_REQUEST);
+                
+            }
+            
+        }else{
+            
+            return new Response('You cannot deleted this user.', Response::HTTP_FORBIDDEN);
+        }
+            
+        }
        
        
-       if ($client){
-       
-           $em->remove($client);
-           $em->flush();
-           
-           return new Response('user removed', Response::HTTP_ACCEPTED);          
-           
-       }else{
-           
-           return new Response('User not found', Response::HTTP_BAD_REQUEST);
-           
-       }
-       
-
-    }
     
     
-
-
 }
-    
-    
-

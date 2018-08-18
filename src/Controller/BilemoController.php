@@ -299,13 +299,13 @@ class BilemoController extends Controller
          * @View
          */
         
-        public function getclientpass(){
+        public function getclientpass(Tools $message){
             
-            $message = $this->container->get(Tools::class);
-            
+                       
             $info = $message->op();
+            $user = $message->GetUserByToken();
             
-           return $info;
+            return $user;
             
         }
         
