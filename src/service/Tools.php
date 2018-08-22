@@ -43,7 +43,7 @@ class Tools
         return $token[1]; //return token
     }
     
-    public function checkPrivilegeDeleted(User $userCurrent, $token) {
+    public function checkPrivilege(User $userCurrent, $token) {
  
         
             

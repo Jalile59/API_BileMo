@@ -34,7 +34,7 @@ class UserController extends Controller
         $token = $tools->getContentToken($request);
         $user = $tools->getUserByToken($token);
         
-        $access = $tools->checkPrivilegeDeleted($user, $token);
+        $access = $tools->checkPrivilege($user, $token);
         
         if($access){
             
@@ -76,6 +76,7 @@ class UserController extends Controller
         $header = $request->server->getHeaders();  //information de la requete avec le token.
         $token = explode(' ', $header['AUTHORIZATION']); // transforme le string en array.
         
+        
         $em = $this->getDoctrine()->getManager();
         
         // repository
@@ -99,6 +100,7 @@ class UserController extends Controller
         
         $em_name = $this->getDoctrine()->getManager();
         $name =$em_name->getRepository(User::class)->findOneBy(array('username'=>$datas['username']));
+        
         
         if($mail or $name){
             
@@ -179,11 +181,7 @@ class UserController extends Controller
         $idExist = $tools->checkUsertExist($id); //Vérifie si l'id reçu existe
         $token = $tools->getContentToken($request);
         
-        
-       
-        
-    
-        
+   
         //die;
         if($idExist){
             
@@ -214,7 +212,7 @@ class UserController extends Controller
         // verfier l'user avant de supprimer
         
         
-        $userParent = $tools->checkPrivilegeDeleted($user, $token);
+        $userParent = $tools->checkPrivilege($user, $token);
         
         if($userParent){
             
@@ -246,7 +244,7 @@ class UserController extends Controller
          * @View
          * 
          * 
-         * @IsGranted("ROLE_ADMIN", statusCode=404, message="You are no access")
+         * 
          */
         
         public function getListUserByclient(Request $request, Tools $tools) {
@@ -254,11 +252,51 @@ class UserController extends Controller
             $token = $tools->getContentToken($request);
             $user = $tools->getUserByToken($token);
             
-            $em = $this->getDoctrine()->getManager();
-            $listeUser = $em->getRepository(User::class)->findBy(array('userParent'=>$user->getId()));
+            $access = $tools->checkPrivilege($user, $token);
             
-                        
-            return $listeUser;
+            if ($access) {
+                
+                $em = $this->getDoctrine()->getManager();
+                $listeUser = $em->getRepository(User::class)->findBy(array('userParent'=>$user->getId()));
+
+                return $listeUser;
+            }else{
+                
+                return new Response('You are no access', Response::HTTP_BAD_REQUEST);
+                
+            }
+            
+
+        }
+        
+        /**
+         * @Get(
+         *  path ="/api",
+         *  name = "All_ressource"
+         * )
+         * 
+         * @View
+         * 
+         */
+        
+        public function ressource () {
+            
+            $ressource =  [
+                'ListingUsers'=>'/api/listinguser',
+                'CreateUser'=>'/api/user',
+                'ShowUser'=> '/api/user/{id}',
+                'ListingProduct' => '/api/products',
+                'CreateProduct'=>'/api/product',
+                'ShowProduct'=>'/api/product/{id}'
+
+            ];
+            
+
+            
+      
+           
+            
+            return $ressource;
         }
        
        
