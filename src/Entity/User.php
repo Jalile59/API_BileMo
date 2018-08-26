@@ -7,10 +7,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use FOS\OAuthServerBundle\Entity\Client as BaseClient;
+use JMS\Serializer\Annotation as Serializer;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="user")
+ * @Serializer\ExclusionPolicy("ALL")
+ *
  */
 class User extends BaseUser
 
@@ -21,6 +25,7 @@ class User extends BaseUser
      * @ORM\GeneratedValue(strategy="AUTO")
      * 
      * @ORM\OneToMany(targetEntity=User::class, mappedBy ="userParent", cascade={"persist", "remove"})
+     * 
      */
     protected $id;
     

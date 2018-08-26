@@ -69,22 +69,16 @@ class UserController extends Controller
      */
     
     public function createlUser(Request $request) {
-        
-        
-        
-        
+               
         $header = $request->server->getHeaders();  //information de la requete avec le token.
         $token = explode(' ', $header['AUTHORIZATION']); // transforme le string en array.
-        
         
         $em = $this->getDoctrine()->getManager();
         
         // repository
         
         $idAdmin = $em->getRepository(AccessToken::class)->findOneBy(array('token'=> $token[1]));
-        $userParent = $idAdmin->getUser();
-        
-        //dump($idAdmin);
+        $userParent = $idAdmin->getUser();      
         
        ///////////////récuperation contenu/////////////////////////
         
@@ -92,8 +86,6 @@ class UserController extends Controller
         $datas = json_decode($data, true);
         
         //////////////// vérification name or email déja utilisé
-        
-        
         
         $em_mail = $this->getDoctrine()->getManager();
         $mail =$em_mail->getRepository(User::class)->findOneBy(array('email'=>$datas['email']));
@@ -109,7 +101,6 @@ class UserController extends Controller
         
         //////////////// create user //////////////////////////////////////
         
-        
         $userManager = $this->get('fos_user.user_manager');
                
         $user = $userManager->createUser(); /* @var $user User */
@@ -119,10 +110,8 @@ class UserController extends Controller
         $user->setEmail($datas['email']);
         $user->setEnabled($datas['username']); 
         $user->setUserParent($userParent);
-        $user->addRole('ROLE_USER');
-        
-        
-        
+        $user->addRole('ROLE_LO');
+   
         ////////////////// create client ////////////////////////////////
         
             
@@ -135,15 +124,13 @@ class UserController extends Controller
                 'password',
                 'refresh_token'
             ));
-            
-            
-            
-           
+     
             $em->persist($client);
             
             $user->setClient($client);
             $userManager->updateUser($user);
             
+           
             $em->flush();
             
             $message = (new \Swift_Message()) 
@@ -156,13 +143,12 @@ class UserController extends Controller
                 
             )), 'text/html');
             
-           
-            
+
             $this->get('mailer')->send($message);
             
-            
-       
-        return new Response('success new user.', Response::HTTP_ACCEPTED);
+            //ajouter location header
+      
+        return new Response('success new user.', Response::HTTP_CREATED);
         }
     }
     
