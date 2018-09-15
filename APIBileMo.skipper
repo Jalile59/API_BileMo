@@ -1,0 +1,500 @@
+<?xml version="1.0"?>
+<skipper version="3.2.13.1414" mvc="Symfony" orm="Doctrine2" name="APIBileMo" uuid="80c95ac0-2368-40a1-afb7-a380b6d0db05">
+  <module name="\src/Entity" local-name="src/Entity" namespace="\App\Entity" local-namespace="\App\Entity" export-format="Doctrine2Php" export-path="src/Entity" uuid="c44c495a-598c-4405-bc50-c8833c6fd5a9">
+    <entity name="\App\Entity\AccessToken" local-name="AccessToken" namespace="\App\Entity" uuid="54c4a18d-7154-4659-9ee3-864891eb0d71">
+      <field name="id" type="integer" required="true" primary="true" uuid="275a29e5-53b9-4fce-ae67-e8e029b6110b">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="client_id" required="true" uuid="e4523819-2061-49f4-aeb5-40e42a1097b5"/>
+      <field name="user_id" uuid="05063101-b604-446c-b526-dd95c6242e49"/>
+      <orm-attributes>
+        <attribute name="export-file-name">AccessToken.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\App\Entity\AccessToken" to="\App\Entity\Client" owner-alias="" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="cd8cc924-b795-4758-b796-634ee8fd7e4b">
+      <association-field from="client_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\App\Entity\AccessToken" to="\App\Entity\User" owner-alias="" inverse-alias="user" many-owner="true" many-inverse="false" uuid="93438d45-9459-4f72-a668-e3ca1d1c44d9">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\App\Entity\AuthCode" local-name="AuthCode" namespace="\App\Entity" uuid="c7892a4a-ffdc-4392-9d64-0314157ee2a0">
+      <field name="id" type="integer" required="true" primary="true" uuid="755627ff-9e4b-4174-8d91-8bf35b837c91">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="client_id" required="true" uuid="58aea837-3054-4658-b435-1464de035909"/>
+      <field name="user_id" uuid="36a2c050-bff3-4af9-8bfa-2c432d1edd01"/>
+      <orm-attributes>
+        <attribute name="export-file-name">AuthCode.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\App\Entity\AuthCode" to="\App\Entity\Client" owner-alias="" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="9423bbc4-ff6a-4afa-9a3f-3077905549a8">
+      <association-field from="client_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\App\Entity\AuthCode" to="\App\Entity\User" owner-alias="" inverse-alias="user" many-owner="true" many-inverse="false" uuid="267b517e-47ae-401e-bed0-429cce3db30e">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\App\Entity\Client" local-name="Client" namespace="\App\Entity" uuid="66e6b978-2534-48d3-97f3-5b175f257bc0">
+      <field name="id" type="integer" required="true" primary="true" uuid="8ac20ffa-9317-4ae2-a1df-d9db67d6b256">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="compagnyName" type="string" size="255" uuid="7d416d8e-6728-4393-809c-339251f80da6"/>
+      <field name="adress" type="string" size="255" uuid="42830b99-499d-464c-8f24-b6a2ffcb6091"/>
+      <field name="number" type="string" size="255" uuid="b9f61497-bacc-44f3-92f7-2a7f5ea87839"/>
+      <field name="userid_id" uuid="18462915-6931-4ff9-b29a-c2cb4649615e"/>
+      <orm-attributes>
+        <attribute name="repository-class">App\Repository\ClientRepository</attribute>
+        <attribute name="export-file-name">Client.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\App\Entity\Client" to="\App\Entity\User" owner-alias="" inverse-alias="userid" many-owner="true" many-inverse="false" uuid="e0a3021e-8541-4eed-a869-b97e0a5a2e1d">
+      <association-field from="userid_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+            <attribute name="cascade-remove">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\App\Entity\Product" local-name="Product" namespace="\App\Entity" uuid="7073a207-aa44-4ce0-bdad-517b94c40efa">
+      <field name="id" type="integer" required="true" primary="true" uuid="7ebe0c92-eb52-4c1c-aab6-7f31d5685c9c">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="name" type="string" size="255" uuid="f3e2792a-fc83-4080-80a8-1d325a7f845c"/>
+      <field name="screnSize" type="integer" uuid="e0df589c-d204-49e1-9c5c-5862aed9d46d"/>
+      <field name="processor" type="string" size="255" uuid="511eb6cc-eba8-483d-a06c-b5b831ab4659"/>
+      <field name="ram" type="integer" uuid="e4be620f-d6d9-49ef-be14-3085f1d5fc40"/>
+      <field name="memory" type="integer" uuid="91f09b17-d7bf-45be-a086-291b30228467"/>
+      <field name="photoDef" type="integer" uuid="dfc21029-6729-4a0c-84ac-f565ba75b361"/>
+      <field name="os" type="string" size="255" uuid="88ed62ef-c052-4234-babe-495f6f61bc88"/>
+      <field name="bande" type="integer" uuid="2a60c9c2-bc6c-463c-85ee-a3839c79431f"/>
+      <field name="battery" type="integer" uuid="1ed05a8a-7b2d-47dc-83fb-5fb58bf6b00b"/>
+      <orm-attributes>
+        <attribute name="repository-class">App\Repository\ProductRepository</attribute>
+        <attribute name="export-file-name">Product.php</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\App\Entity\RefreshToken" local-name="RefreshToken" namespace="\App\Entity" uuid="b0476516-f83f-4bec-97a9-75864623a8e6">
+      <field name="id" type="integer" required="true" primary="true" uuid="09e9781c-8bbe-4fe4-bb15-b773c430fb73">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="client_id" required="true" uuid="111eeda4-a262-4e67-8c26-4735a608dee4"/>
+      <field name="user_id" uuid="44452236-d727-4cb0-b37a-3d9751fe2f5a"/>
+      <orm-attributes>
+        <attribute name="export-file-name">RefreshToken.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\App\Entity\RefreshToken" to="\App\Entity\Client" owner-alias="" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="2f87ea5b-2bb6-4ff0-b578-9ffcd84c8885">
+      <association-field from="client_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\App\Entity\RefreshToken" to="\App\Entity\User" owner-alias="" inverse-alias="user" many-owner="true" many-inverse="false" uuid="d446b1a0-3fa5-4479-8bf9-3f657a8f032a">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\App\Entity\User" local-name="User" namespace="\App\Entity" uuid="c3345e87-1db2-4dff-a0f2-eff9ea03a670">
+      <field name="id" type="integer" required="true" primary="true" uuid="9b75f5b4-980f-4285-b8cf-909999e44ed0">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="userParent_id" uuid="8d153e88-bb9d-4506-ba76-fce4386fa804"/>
+      <orm-attributes>
+        <attribute name="repository-class">App\Repository\UserRepository</attribute>
+        <attribute name="table">user</attribute>
+        <attribute name="export-file-name">User.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\App\Entity\User" to="\User::class" owner-alias="" inverse-alias="userParent" many-owner="true" many-inverse="false" uuid="034f35af-1096-470d-ae63-d1b89cc7ec55">
+      <association-field from="userParent_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+  </module>
+  <module name="\vendor/friendsofsymfony/oauth-server-bundle/Resources/config/doctrine" local-name="vendor/friendsofsymfony/oauth-server-bundle/Resources/config/doctrine" namespace="\FOS\OAuthServerBundle\Entity" local-namespace="\FOS\OAuthServerBundle\Entity" export-format="Doctrine2Xml" export-path="vendor/friendsofsymfony/oauth-server-bundle/Resources/config/doctrine" uuid="4077a7eb-f79b-4528-9801-98846cab22d5">
+    <entity name="\FOS\OAuthServerBundle\Entity\AccessToken" local-name="AccessToken" namespace="\FOS\OAuthServerBundle\Entity" uuid="b3d22b26-af0b-449a-bd37-0802df69b2ba">
+      <field name="token" type="string" unique="true" uuid="573bea4d-b539-436d-82e8-0ff14b99b833">
+        <orm-attributes>
+          <attribute name="column">token</attribute>
+        </orm-attributes>
+      </field>
+      <field name="expiresAt" type="integer" uuid="69728af3-9e49-4367-9b62-891e5dd61b52">
+        <orm-attributes>
+          <attribute name="column">expires_at</attribute>
+        </orm-attributes>
+      </field>
+      <field name="scope" type="string" uuid="9ee4d01b-7e30-4871-861e-29c91b8d84bd">
+        <orm-attributes>
+          <attribute name="column">scope</attribute>
+        </orm-attributes>
+      </field>
+      <inheritance-parent type="MAPPED_SUPERCLASS" uuid="0c826f4f-b6de-4d52-9e85-47cb6ea58117"/>
+      <orm-attributes>
+        <attribute name="export-file-name">AccessToken.orm.xml</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\FOS\OAuthServerBundle\Entity\AuthCode" local-name="AuthCode" namespace="\FOS\OAuthServerBundle\Entity" uuid="8e10f098-7324-4c29-b42d-1c6fe2cd1396">
+      <field name="token" type="string" unique="true" uuid="89040aa9-915d-4cdf-9e09-688be75e2b75">
+        <orm-attributes>
+          <attribute name="column">token</attribute>
+        </orm-attributes>
+      </field>
+      <field name="redirectUri" type="text" uuid="27581fdc-b756-493f-8691-9470e4243f97">
+        <orm-attributes>
+          <attribute name="column">redirect_uri</attribute>
+        </orm-attributes>
+      </field>
+      <field name="expiresAt" type="integer" uuid="9ffa4728-43a9-480d-a2b3-6d8ebe0367d6">
+        <orm-attributes>
+          <attribute name="column">expires_at</attribute>
+        </orm-attributes>
+      </field>
+      <field name="scope" type="string" uuid="ec43c17b-29db-4da6-b4ae-910c476f41b9">
+        <orm-attributes>
+          <attribute name="column">scope</attribute>
+        </orm-attributes>
+      </field>
+      <inheritance-parent type="MAPPED_SUPERCLASS" uuid="ccaa2ec3-e387-41e0-8d8d-235100254009"/>
+      <orm-attributes>
+        <attribute name="export-file-name">AuthCode.orm.xml</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\FOS\OAuthServerBundle\Entity\Client" local-name="Client" namespace="\FOS\OAuthServerBundle\Entity" uuid="19aa71fc-309c-40fc-93a8-12799b44e2e2">
+      <field name="randomId" type="string" uuid="757846ed-575b-471b-8960-dc7c780177d5">
+        <orm-attributes>
+          <attribute name="column">random_id</attribute>
+        </orm-attributes>
+      </field>
+      <field name="redirectUris" type="array" uuid="cd9f647e-e9a5-417c-a6ba-829ad6b0b49a">
+        <orm-attributes>
+          <attribute name="column">redirect_uris</attribute>
+        </orm-attributes>
+      </field>
+      <field name="secret" type="string" uuid="0a8e2979-dd0d-4dc2-8d10-d7649fbbcaca">
+        <orm-attributes>
+          <attribute name="column">secret</attribute>
+        </orm-attributes>
+      </field>
+      <field name="allowedGrantTypes" type="array" uuid="7c615078-efdf-46f4-b587-3cce73d52444">
+        <orm-attributes>
+          <attribute name="column">allowed_grant_types</attribute>
+        </orm-attributes>
+      </field>
+      <inheritance-parent type="MAPPED_SUPERCLASS" uuid="cf1436d4-3ecd-4ba2-bb9b-db8ee6949856"/>
+      <orm-attributes>
+        <attribute name="export-file-name">Client.orm.xml</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\FOS\OAuthServerBundle\Entity\RefreshToken" local-name="RefreshToken" namespace="\FOS\OAuthServerBundle\Entity" uuid="b58919c0-980d-4bde-ba4e-7612ac54030e">
+      <field name="token" type="string" unique="true" uuid="c358e2b0-5d58-4e46-896b-7efc3e957b94">
+        <orm-attributes>
+          <attribute name="column">token</attribute>
+        </orm-attributes>
+      </field>
+      <field name="expiresAt" type="integer" uuid="940903b6-dd34-49cc-87dc-c296badfc788">
+        <orm-attributes>
+          <attribute name="column">expires_at</attribute>
+        </orm-attributes>
+      </field>
+      <field name="scope" type="string" uuid="2323c888-75a3-4283-943f-cb16e8b5966c">
+        <orm-attributes>
+          <attribute name="column">scope</attribute>
+        </orm-attributes>
+      </field>
+      <inheritance-parent type="MAPPED_SUPERCLASS" uuid="12c59b81-5246-4260-b7de-afbfb3e41d56"/>
+      <orm-attributes>
+        <attribute name="export-file-name">RefreshToken.orm.xml</attribute>
+      </orm-attributes>
+    </entity>
+  </module>
+  <module name="\vendor/friendsofsymfony/oauth-server-bundle/Tests/Functional/TestBundle/Entity" local-name="vendor/friendsofsymfony/oauth-server-bundle/Tests/Functional/TestBundle/Entity" namespace="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity" local-namespace="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity" export-format="Doctrine2Php" export-path="vendor/friendsofsymfony/oauth-server-bundle/Tests/Functional/TestBundle/Entity" uuid="99242262-0733-456b-a893-bca2eaee9f70">
+    <entity name="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\AccessToken" local-name="AccessToken" namespace="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity" uuid="7915e47e-e543-4749-a0b1-7637a7ca188f">
+      <field name="id" type="integer" required="true" primary="true" uuid="c748719e-4a13-41d7-b974-ad6a2a68dde7">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="client_id" required="true" uuid="35bccb89-88e4-4089-9c92-227ce54baf53"/>
+      <field name="user_id" uuid="d52e19ed-670d-4597-a863-53b364251b3d"/>
+      <orm-attributes>
+        <attribute name="table">access_tokens</attribute>
+        <attribute name="export-file-name">AccessToken.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\AccessToken" to="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\Client" owner-alias="" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="23d13997-9b01-4dc6-9c52-d5016f578f15">
+      <association-field from="client_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\AccessToken" to="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\User" owner-alias="" inverse-alias="user" many-owner="true" many-inverse="false" uuid="910d87a4-4f7c-4f47-8824-a918b0195e0d">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\AuthCode" local-name="AuthCode" namespace="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity" uuid="6ea412d8-eeaa-45d3-91eb-c6c9ab23be2c">
+      <field name="id" type="integer" required="true" primary="true" uuid="634c53f6-e8b0-48ad-bb88-17535d1d561f">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="client_id" required="true" uuid="f22dfb39-aa36-49c6-8b8f-18eff3903e9d"/>
+      <field name="user_id" uuid="ecef7f09-b4c8-49b4-9b4c-4f40d8f5e964"/>
+      <orm-attributes>
+        <attribute name="table">auth_codes</attribute>
+        <attribute name="export-file-name">AuthCode.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\AuthCode" to="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\Client" owner-alias="" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="ed6fb149-f5dd-4365-8be9-94217b33ce79">
+      <association-field from="client_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\AuthCode" to="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\User" owner-alias="" inverse-alias="user" many-owner="true" many-inverse="false" uuid="b5c89231-0933-4e1d-9720-86965d164a8d">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\Client" local-name="Client" namespace="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity" uuid="b6f35f65-b25a-4fee-9653-27ad38f4aa3a">
+      <field name="id" type="integer" required="true" primary="true" uuid="09ea523e-f025-4548-bf36-94543e84a586">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <orm-attributes>
+        <attribute name="table">clients</attribute>
+        <attribute name="export-file-name">Client.php</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\RefreshToken" local-name="RefreshToken" namespace="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity" uuid="da1820bb-f215-4904-8be6-208490389b08">
+      <field name="id" type="integer" required="true" primary="true" uuid="dab7be3f-a1a8-4bb9-9bcb-9eac1f2232ed">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="client_id" required="true" uuid="7617aed1-9167-4866-8008-218bc68cf91e"/>
+      <field name="user_id" uuid="f36a7f5e-188b-436c-b889-b02494ca103c"/>
+      <orm-attributes>
+        <attribute name="table">refresh_tokens</attribute>
+        <attribute name="export-file-name">RefreshToken.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\RefreshToken" to="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\Client" owner-alias="" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="71e3ada6-37d9-47d1-bc10-77c01c81d027">
+      <association-field from="client_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\RefreshToken" to="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\User" owner-alias="" inverse-alias="user" many-owner="true" many-inverse="false" uuid="74ab782d-dc3d-4773-aaf3-4875a4fda633">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\User" local-name="User" namespace="\FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity" uuid="63baf673-ddbc-4fe8-aaf7-a9173a86458e">
+      <field name="id" type="integer" required="true" primary="true" uuid="89221e74-0d4c-43b0-97f9-9df4a9dcf368">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="password" type="string" uuid="a9935249-c66e-4e87-bebe-492a38d24e3f"/>
+      <orm-attributes>
+        <attribute name="export-file-name">User.php</attribute>
+      </orm-attributes>
+    </entity>
+  </module>
+  <module name="\vendor/friendsofsymfony/user-bundle/Resources/config/doctrine-mapping" local-name="vendor/friendsofsymfony/user-bundle/Resources/config/doctrine-mapping" namespace="\FOS\UserBundle\Model" local-namespace="\FOS\UserBundle\Model" export-format="Doctrine2Xml" export-path="vendor/friendsofsymfony/user-bundle/Resources/config/doctrine-mapping" uuid="f9ee600b-1d85-428e-920b-f513ef39506a">
+    <entity name="\FOS\UserBundle\Model\Group" local-name="Group" namespace="\FOS\UserBundle\Model" uuid="7f974365-07f9-4100-b53e-84ac68ffbb21">
+      <field name="name" type="string" size="180" unique="true" uuid="96ac808e-0b3c-4f8a-89e5-0cb38c47bdc3">
+        <orm-attributes>
+          <attribute name="column">name</attribute>
+        </orm-attributes>
+      </field>
+      <field name="roles" type="array" uuid="cdaed7a2-44c2-44ba-8d62-4030a7cab0ab">
+        <orm-attributes>
+          <attribute name="column">roles</attribute>
+        </orm-attributes>
+      </field>
+      <inheritance-parent type="MAPPED_SUPERCLASS" uuid="3a04a972-b4f0-4f07-8cdb-57ae7ae4e022"/>
+      <orm-attributes>
+        <attribute name="export-file-name">Group.orm.xml</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\FOS\UserBundle\Model\User" local-name="User" namespace="\FOS\UserBundle\Model" uuid="cf05e88b-e14c-4c39-bedc-8d9ab15607f6">
+      <field name="username" type="string" size="180" uuid="84a0ec2e-b494-488b-b5a5-3cdd55e48f6c">
+        <orm-attributes>
+          <attribute name="column">username</attribute>
+        </orm-attributes>
+      </field>
+      <field name="usernameCanonical" type="string" size="180" unique="true" uuid="4adf1f7d-4769-4321-8409-822a200c74ae">
+        <orm-attributes>
+          <attribute name="column">username_canonical</attribute>
+        </orm-attributes>
+      </field>
+      <field name="email" type="string" size="180" uuid="fb9f3fcc-9c4a-4d62-b6ec-ba62a26bb165">
+        <orm-attributes>
+          <attribute name="column">email</attribute>
+        </orm-attributes>
+      </field>
+      <field name="emailCanonical" type="string" size="180" unique="true" uuid="ce1dd06c-d607-4385-874b-bb49cdfa60dc">
+        <orm-attributes>
+          <attribute name="column">email_canonical</attribute>
+        </orm-attributes>
+      </field>
+      <field name="enabled" type="boolean" uuid="f3ec18e4-678a-441e-aa2a-f3182e874937">
+        <orm-attributes>
+          <attribute name="column">enabled</attribute>
+        </orm-attributes>
+      </field>
+      <field name="salt" type="string" uuid="6378a916-ef14-4b72-b520-b9ee5de271e3">
+        <orm-attributes>
+          <attribute name="column">salt</attribute>
+        </orm-attributes>
+      </field>
+      <field name="password" type="string" uuid="965be61a-e034-4373-a7ad-539f3fe6de3c">
+        <orm-attributes>
+          <attribute name="column">password</attribute>
+        </orm-attributes>
+      </field>
+      <field name="lastLogin" type="datetime" uuid="dffcd53f-4007-4295-bbe6-9ad1b0e844e0">
+        <orm-attributes>
+          <attribute name="column">last_login</attribute>
+        </orm-attributes>
+      </field>
+      <field name="confirmationToken" type="string" size="180" unique="true" uuid="ee151135-3a96-4656-98fc-09022f63901d">
+        <orm-attributes>
+          <attribute name="column">confirmation_token</attribute>
+        </orm-attributes>
+      </field>
+      <field name="passwordRequestedAt" type="datetime" uuid="b6d46a11-c245-4714-9a4e-6c994eb1f83a">
+        <orm-attributes>
+          <attribute name="column">password_requested_at</attribute>
+        </orm-attributes>
+      </field>
+      <field name="roles" type="array" uuid="06d6df7b-44bd-490b-9e54-24e33f9ebc0b">
+        <orm-attributes>
+          <attribute name="column">roles</attribute>
+        </orm-attributes>
+      </field>
+      <inheritance-parent type="MAPPED_SUPERCLASS" uuid="de03602d-20bd-4e47-a853-bfcde9969223"/>
+      <orm-attributes>
+        <attribute name="export-file-name">User.orm.xml</attribute>
+      </orm-attributes>
+    </entity>
+  </module>
+  <module name="\tmp" local-name="tmp" namespace="\" uuid="7d862fde-1283-4d6d-9a26-c38cb5401f10">
+    <entity name="\User::class" local-name="User::class" namespace="\" uuid="8a95ed31-d88b-49f2-8fc2-7583e71e7b18">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="9834bf1f-65db-4db6-bc3d-a4273d38b89c"/>
+    </entity>
+  </module>
+  <visual-data>
+    <association uuid="034f35af-1096-470d-ae63-d1b89cc7ec55" color="#2E63AF"/>
+    <association uuid="23d13997-9b01-4dc6-9c52-d5016f578f15" color="#00B4D0"/>
+    <association uuid="267b517e-47ae-401e-bed0-429cce3db30e" color="#F4931F"/>
+    <association uuid="2f87ea5b-2bb6-4ff0-b578-9ffcd84c8885" color="#C774AF"/>
+    <association uuid="71e3ada6-37d9-47d1-bc10-77c01c81d027" color="#CDC32B"/>
+    <association uuid="74ab782d-dc3d-4773-aaf3-4875a4fda633" color="#F4931F"/>
+    <association uuid="910d87a4-4f7c-4f47-8824-a918b0195e0d" color="#A8A8A8"/>
+    <association uuid="93438d45-9459-4f72-a668-e3ca1d1c44d9" color="#61D351"/>
+    <association uuid="9423bbc4-ff6a-4afa-9a3f-3077905549a8" color="#CDC32B"/>
+    <association uuid="b5c89231-0933-4e1d-9720-86965d164a8d" color="#61D351"/>
+    <association uuid="cd8cc924-b795-4758-b796-634ee8fd7e4b" color="#0A783D"/>
+    <association uuid="d446b1a0-3fa5-4479-8bf9-3f657a8f032a" color="#8A54A2"/>
+    <association uuid="e0a3021e-8541-4eed-a869-b97e0a5a2e1d" color="#B31F24"/>
+    <association uuid="ed6fb149-f5dd-4365-8be9-94217b33ce79" color="#0A783D"/>
+    <entity uuid="19aa71fc-309c-40fc-93a8-12799b44e2e2" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="20" position-y="153" size-x="0" size-x2="112" size-y="0" size-y2="73"/>
+    <entity uuid="54c4a18d-7154-4659-9ee3-864891eb0d71" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="49" position-y="40" size-x="0" size-x2="59" size-y="0" size-y2="59"/>
+    <entity uuid="63baf673-ddbc-4fe8-aaf7-a9173a86458e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="20" position-y="238" size-x="0" size-x2="81" size-y="0" size-y2="45"/>
+    <entity uuid="66e6b978-2534-48d3-97f3-5b175f257bc0" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="336" position-y="40" size-x="0" size-x2="118" size-y="0" size-y2="87"/>
+    <entity uuid="6ea412d8-eeaa-45d3-91eb-c6c9ab23be2c" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="152" position-y="40" size-x="0" size-x2="59" size-y="0" size-y2="59"/>
+    <entity uuid="7073a207-aa44-4ce0-bdad-517b94c40efa" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="30" position-y="237" size-x="0" size-x2="97" size-y="0" size-y2="157"/>
+    <entity uuid="7915e47e-e543-4749-a0b1-7637a7ca188f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="31" position-y="40" size-x="0" size-x2="59" size-y="0" size-y2="59"/>
+    <entity uuid="7f974365-07f9-4100-b53e-84ac68ffbb21" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="45" position-y="40" size-x="0" size-x2="83" size-y="0" size-y2="45"/>
+    <entity uuid="8a95ed31-d88b-49f2-8fc2-7583e71e7b18" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="20" position-y="40" size-x="0" size-x2="59" size-y="0" size-y2="31"/>
+    <entity uuid="8e10f098-7324-4c29-b42d-1c6fe2cd1396" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="185" position-y="40" size-x="0" size-x2="85" size-y="0" size-y2="73"/>
+    <entity uuid="b0476516-f83f-4bec-97a9-75864623a8e6" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="207" position-y="237" size-x="0" size-x2="59" size-y="0" size-y2="59"/>
+    <entity uuid="b3d22b26-af0b-449a-bd37-0802df69b2ba" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="33" position-y="40" size-x="0" size-x2="85" size-y="0" size-y2="59"/>
+    <entity uuid="b58919c0-980d-4bde-ba4e-7612ac54030e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="185" position-y="153" size-x="0" size-x2="85" size-y="0" size-y2="59"/>
+    <entity uuid="b6f35f65-b25a-4fee-9653-27ad38f4aa3a" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="31" position-y="139" size-x="0" size-x2="59" size-y="0" size-y2="31"/>
+    <entity uuid="c3345e87-1db2-4dff-a0f2-eff9ea03a670" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="360" position-y="237" size-x="0" size-x2="70" size-y="0" size-y2="45"/>
+    <entity uuid="c7892a4a-ffdc-4392-9d64-0314157ee2a0" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="207" position-y="40" size-x="0" size-x2="59" size-y="0" size-y2="59"/>
+    <entity uuid="cf05e88b-e14c-4c39-bedc-8d9ab15607f6" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="193" position-y="40" size-x="0" size-x2="133" size-y="0" size-y2="171"/>
+    <entity uuid="da1820bb-f215-4904-8be6-208490389b08" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="152" position-y="139" size-x="0" size-x2="59" size-y="0" size-y2="59"/>
+    <module uuid="4077a7eb-f79b-4528-9801-98846cab22d5" bg-color="#E7F5FD" position-x="838" position-y="564" size-x="0" size-x2="304" size-y="0" size-y2="246"/>
+    <module uuid="7d862fde-1283-4d6d-9a26-c38cb5401f10" bg-color="#FEEFE3" position-x="838" position-y="910" size-x="0" size-x2="100" size-y="0" size-y2="100"/>
+    <module uuid="99242262-0733-456b-a893-bca2eaee9f70" bg-color="#E7F3E7" position-x="496" position-y="564" size-x="0" size-x2="242" size-y="0" size-y2="317"/>
+    <module uuid="c44c495a-598c-4405-bc50-c8833c6fd5a9" bg-color="#EAE4F1" position-x="50" position-y="50" size-x="0" size-x2="474" size-y="0" size-y2="414"/>
+    <module uuid="f9ee600b-1d85-428e-920b-f513ef39506a" bg-color="#FEFCE8" position-x="50" position-y="564" size-x="0" size-x2="346" size-y="0" size-y2="231"/>
+    <project uuid="80c95ac0-2368-40a1-afb7-a380b6d0db05" size-x="0" size-x2="1192" size-y="0" size-y2="1060"/>
+  </visual-data>
+</skipper>

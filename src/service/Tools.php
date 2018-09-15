@@ -22,9 +22,6 @@ class Tools
        
     }
  
-    public function op() {
-        return 5;
-    }
     
     public function getUserByToken($token) {
         
@@ -83,6 +80,23 @@ class Tools
         }else{
             
             return false;
+        }
+        
+    }
+    
+    public function getuserByMailOrId($id){
+        
+        if(is_numeric($id)){
+            
+            $user = $this->em->getRepository(User::class)->find($id);
+            
+            return $user;
+            
+        }else{
+            
+            $user = $this->em->getRepository(User::class)->findOneBy(array('email'=>$id));
+            
+            return $user;
         }
         
     }

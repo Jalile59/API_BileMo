@@ -38,21 +38,22 @@ class UserController extends Controller
         
         if($access){
             
-            $em = $this->getDoctrine()->getManager();
-            $user = $em->getRepository(User::class)->find($id);
+            $user = $tools->getuserByMailOrId($id);
             
             if($user){
+                
                 return $user;
+                
+                }else{
+                    
+                    return new Response('user not found !', RedirectResponse::HTTP_BAD_REQUEST);
+                }
+                
             }else{
                 
-                return new Response('user not found !', RedirectResponse::HTTP_BAD_REQUEST);
+                return new Response('access denied.', RedirectResponse::HTTP_UNAUTHORIZED);
+                
             }
-            
-        }else{
-            
-            return new Response('access denied.', RedirectResponse::HTTP_BAD_REQUEST);
-            
-        }
         
 
         
@@ -78,7 +79,15 @@ class UserController extends Controller
         // repository
         
         $idAdmin = $em->getRepository(AccessToken::class)->findOneBy(array('token'=> $token[1]));
-        $userParent = $idAdmin->getUser();      
+        $userParent = $idAdmin->getUser();
+        
+       $roles = $userParent->getRoles();
+        
+      
+        if($roles[0] != 'ROLE_SUPER_ADMIN'){
+            
+            return new Response('droit ADMIN manquant', Response::HTTP_UNAUTHORIZED);
+        }
         
        ///////////////récuperation contenu/////////////////////////
         
@@ -111,6 +120,16 @@ class UserController extends Controller
         $user->setEnabled($datas['username']); 
         $user->setUserParent($userParent);
         $user->addRole('ROLE_LO');
+        
+        ////////////// Vérification asset user //////////////////////////////
+        
+        $error = $this->get('validator')->validate($user);
+        //dump($error);
+        if (count($error)){
+            
+            return new Response($error, Response::HTTP_BAD_REQUEST);
+        }
+        
    
         ////////////////// create client ////////////////////////////////
         
