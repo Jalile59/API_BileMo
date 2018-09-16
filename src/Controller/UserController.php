@@ -243,8 +243,9 @@ class UserController extends Controller
         
         /**
          * @Get(
-         *  path = "/api/listinguser",
-         *  name = "Listing_User_By_Client"
+         *  path = "/api/listinguser/{page}",
+         *  name = "Listing_User_By_Client",
+         *  requirements = {"page" = "\d+"}
          * )
          * @View
          * 
@@ -252,7 +253,7 @@ class UserController extends Controller
          * 
          */
         
-        public function getListUserByclient(Request $request, Tools $tools) {
+        public function getListUserByclient(Request $request, Tools $tools, $page) {
            
             $token = $tools->getContentToken($request);
             $user = $tools->getUserByToken($token);
@@ -262,7 +263,8 @@ class UserController extends Controller
             if ($access) {
                 
                 $em = $this->getDoctrine()->getManager();
-                $listeUser = $em->getRepository(User::class)->findBy(array('userParent'=>$user->getId()));
+                //$listeUser = $em->getRepository(User::class)->findBy(array('userParent'=>$user->getId()));
+                $listeUser = $em->getRepository(User::class)->getAll_pagination($user->getId(),$page);
 
                 return $listeUser;
             }else{

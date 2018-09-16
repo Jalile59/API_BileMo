@@ -18,6 +18,20 @@ class UserRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, User::class);
     }
+    
+    public function getAll_pagination($critaire, $page)
+    {
+        $qbd = $this->createQueryBuilder('user');
+        
+        $qbd->andWhere('user.userParent = :critaire')
+        ->setParameter('critaire', $critaire)
+        ->setFirstResult($page*5)
+        ->setMaxResults(5);
+        
+        $data = $qbd->getQuery()->getResult();
+        
+        return $data;
+    }
 
 //    /**
 //     * @return Users[] Returns an array of Users objects
