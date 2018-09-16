@@ -19,6 +19,8 @@ use App\Entity\AccessToken;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\service\Tools;
+use Symfony\Component\Cache\Simple\FilesystemCache;
+
 class UserController extends Controller
 {
     /**
@@ -35,10 +37,20 @@ class UserController extends Controller
         $user = $tools->getUserByToken($token);
         
         $access = $tools->checkPrivilege($user, $token);
+        $cache = new FilesystemCache();
         
         if($access){
             
-            $user = $tools->getuserByMailOrId($id);
+            if(!$cache->has($id))   //vérification si id objet déja en cache.
+            {
+                $user = $tools->getuserByMailOrId($id);
+                
+                $tools->incache($id, $user); //mise en cache de l'objet.
+            }else{
+                $user = $cache->get($id); //récuperation objet depuis le cache.
+                
+                
+            }
             
             if($user){
                 
@@ -254,19 +266,34 @@ class UserController extends Controller
          */
         
         public function getListUserByclient(Request $request, Tools $tools, $page) {
-           
+            
+            $cache = new FilesystemCache();
             $token = $tools->getContentToken($request);
             $user = $tools->getUserByToken($token);
+            
+            $url = $tools->getUrl($request);    
+            
             
             $access = $tools->checkPrivilege($user, $token);
             
             if ($access) {
                 
-                $em = $this->getDoctrine()->getManager();
-                //$listeUser = $em->getRepository(User::class)->findBy(array('userParent'=>$user->getId()));
-                $listeUser = $em->getRepository(User::class)->getAll_pagination($user->getId(),$page);
+                if(!$cache->has(md5($url)))
+                {
+                    $em = $this->getDoctrine()->getManager();
+                    
+                    $listeUser = $em->getRepository(User::class)->getAll_pagination($user->getId(),$page);
+                    
+                    $tools->incache(md5($url), $listeUser);
+                    
+                    return $listeUser;
+                }else{
+                    $listeUser =  $cache->get(md5($url));
+                    
+                    return $listeUser;
+                }
+                
 
-                return $listeUser;
             }else{
                 
                 return new Response('You are no access', Response::HTTP_BAD_REQUEST);

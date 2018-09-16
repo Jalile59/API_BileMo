@@ -13,6 +13,7 @@
         "friendsofsymfony/user-bundle": "~2.0",
         "jms/serializer-bundle": "^2.4",
         "sensio/framework-extra-bundle": "^5.2",
+        "symfony/cache": "^4.1",
         "symfony/console": "^4.1",
         "symfony/debug": "^4.1",
         "symfony/flex": "^1.0",
