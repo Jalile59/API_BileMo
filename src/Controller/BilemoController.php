@@ -94,17 +94,18 @@ class BilemoController extends Controller
     
     /**
      * @Get(
-     *     path = "/api/products",
-     *     name = "app_produc_getall"
+     *     path = "/api/products/{page}",
+     *     name = "app_produc_getall",
+     *     requirements = {"page"="\d+"}
      * )
      */
     
-    public function getAllProducts() {
+    public function getAllProducts($page) {
         
         
         $em =$this->getDoctrine()->getManager();
-        $listMobile = $em->getRepository(Product::class)->findAll();
         
+        $listMobile = $em->getRepository(Product::class)->getall_paginat($page);
         if($listMobile){
             
             $data = $this->get('serializer')->serialize($listMobile, 'json');

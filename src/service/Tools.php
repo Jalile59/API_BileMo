@@ -7,93 +7,81 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 
-
 class Tools
 {
-    
-    
+
     private $em;
-    
-    
-    public function __construct( EntityManagerInterface $entity)
+
+    public function __construct(EntityManagerInterface $entity)
     {
-       
         $this->em = $entity;
-       
     }
- 
-    
-    public function getUserByToken($token) {
-        
-        $accessToken = $this->em->getRepository(AccessToken::class)->findOneBy(array('token'=>$token));
-        
+
+    public function getUserByToken($token)
+    {
+        $accessToken = $this->em->getRepository(AccessToken::class)->findOneBy(array(
+            'token' => $token
+        ));
+
         $user = $accessToken->getUser();
-   
+
         return $user;
     }
-    
-    public function getContentToken($request){
-        
-        $header = $request->server->getHeaders();  //information de la requête avec le token.
+
+    public function getContentToken($request)
+    {
+        $header = $request->server->getHeaders(); // information de la requête avec le token.
         $token = explode(' ', $header['AUTHORIZATION']); // transforme le string en array.
-        
-        return $token[1]; //return token
+
+        return $token[1]; // return token
     }
-    
-    public function checkPrivilege(User $userCurrent, $token) {
- 
-        
-            
-            $user = $this->getUserByToken($token);
 
-            $userParent = $user->getUserParent();
-            $userRole = $user->getRoles();
-            
+    public function checkPrivilege(User $userCurrent, $token)
+    {
+        $user = $this->getUserByToken($token);
 
-            if($userParent == $userCurrent or $userRole[0] == 'ROLE_SUPER_ADMIN'){
-                
-                return TRUE;
-            }else{
-                
-                return FALSE;
-            }
-           
+        $userParent = $user->getUserParent();
+        $userRole = $user->getRoles();
 
-        
-    }
-    
-    public function checkUsertExist($id){
-        
-        if(is_numeric($id)){
-            
-            $user = $this->em->getRepository(User::class)->find($id);
-            
-        }else{
-            
-            $user = $this->em->getRepository(User::class)->findOneBy(array('email'=>$id));
-            
+        if ($userParent == $userCurrent or $userRole[0] == 'ROLE_SUPER_ADMIN') {
+
+            return TRUE;
+        } else {
+
+            return FALSE;
         }
-        
-        if($user){
-            
+    }
+
+    public function checkUsertExist($id)
+    {
+        if (is_numeric($id)) {
+
+            $user = $this->em->getRepository(User::class)->find($id);
+        } else {
+
+            $user = $this->em->getRepository(User::class)->findOneBy(array(
+                'email' => $id
+            ));
+        }
+
+        if ($user) {
+
             return true;
-        }else{
-            
+        } else {
+
             return false;
         }
-        
     }
-    
-    public function getuserByMailOrId($id){
-        
-        if(is_numeric($id)){
-            
+
+    public function getuserByMailOrId($id)
+    {
+        if (is_numeric($id)) {
+
             $user = $this->em->getRepository(User::class)->find($id);
-            
+
             return $user;
-            
-        }else{
-            
+        } else {
+
             $user = $this->em->getRepository(User::class)->findOneBy(array('email'=>$id));
             
             return $user;
