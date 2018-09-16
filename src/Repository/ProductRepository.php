@@ -18,6 +18,20 @@ class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
+    
+    public function getall_paginat($page)
+    {
+        $qbd = $this->createQueryBuilder('product')
+                      ->setFirstResult($page*5)
+                       ->setMaxResults(5);
+        
+        $data = $qbd->getQuery()->getResult();
+            
+            
+        
+        return $data;
+        
+    }
 
 //    /**
 //     * @return Product[] Returns an array of Product objects
