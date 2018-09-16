@@ -278,17 +278,17 @@ class UserController extends Controller
             
             if ($access) {
                 
-                if(!$cache->has(md5($url)))
+                if(!$cache->has(md5($url))) //vérification si id objet déja en cache.
                 {
                     $em = $this->getDoctrine()->getManager();
                     
                     $listeUser = $em->getRepository(User::class)->getAll_pagination($user->getId(),$page);
                     
-                    $tools->incache(md5($url), $listeUser);
+                    $tools->incache(md5($url), $listeUser);  //mise en cache de l'objet.
                     
                     return $listeUser;
                 }else{
-                    $listeUser =  $cache->get(md5($url));
+                    $listeUser =  $cache->get(md5($url)); //récuperation objet depuis le cache.
                     
                     return $listeUser;
                 }
