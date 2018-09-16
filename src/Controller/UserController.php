@@ -65,7 +65,7 @@ class UserController extends Controller
      *  name = "app_user_add"
      * )
      * 
-     * @IsGranted("ROLE_SUPER_ADMIN", statusCode=404, message="You are no access")
+     * @IsGranted("ROLE_ADMIN", statusCode=404, message="You are no access")
      * 
      */
     
@@ -84,7 +84,7 @@ class UserController extends Controller
        $roles = $userParent->getRoles();
         
       
-        if($roles[0] != 'ROLE_SUPER_ADMIN'){
+        if($roles[0] != 'ROLE_ADMIN'){
             
             return new Response('droit ADMIN manquant', Response::HTTP_UNAUTHORIZED);
         }
@@ -119,12 +119,12 @@ class UserController extends Controller
         $user->setEmail($datas['email']);
         $user->setEnabled($datas['username']); 
         $user->setUserParent($userParent);
-        $user->addRole('ROLE_LO');
+        $user->addRole('ROLE_USER');
         
         ////////////// Vérification asset user //////////////////////////////
         
         $error = $this->get('validator')->validate($user);
-        //dump($error);
+        
         if (count($error)){
             
             return new Response($error, Response::HTTP_BAD_REQUEST);
