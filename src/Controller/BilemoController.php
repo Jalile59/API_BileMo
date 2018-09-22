@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+
+
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +22,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\service\Tools;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class BilemoController extends Controller
 {
@@ -100,20 +103,36 @@ class BilemoController extends Controller
      * )
      */
     
-    public function getAllProducts($page) {
+    public function getAllProducts($page, Request $request, Tools $tools) {
         
         
         $em =$this->getDoctrine()->getManager();
+        $cache = new FilesystemCache();
+        
+        $url = $tools->getUrl($request);
         
         $listMobile = $em->getRepository(Product::class)->getall_paginat($page);
+        
         if($listMobile){
             
-            $data = $this->get('serializer')->serialize($listMobile, 'json');
-            
-            $response = new Response($data);
-            $response->headers->set('Content-Type', 'application/json');
-            
-            return $response;
+            if(!$cache->has(md5($url)))
+            {
+                $data = $this->get('serializer')->serialize($listMobile, 'json');
+                
+                $response = new Response($data);
+                $response->headers->set('Content-Type', 'application/json');
+                
+                $tools->incache(md5($url), $response);
+                                
+                return $response;
+            }else{
+                
+                $response = $cache->get(md5($url));
+                dump($response);
+                
+                return $response;
+            }
+
             
                     
         }else{
