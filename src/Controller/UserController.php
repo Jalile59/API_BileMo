@@ -82,7 +82,9 @@ class UserController extends Controller
      */
     
     public function createlUser(Request $request) {
-               
+        
+        $cache = new FilesystemCache();
+        
         $header = $request->server->getHeaders();  //information de la requete avec le token.
         $token = explode(' ', $header['AUTHORIZATION']); // transforme le string en array.
         
@@ -174,6 +176,7 @@ class UserController extends Controller
                 
             )), 'text/html');
             
+            $cache->clear(); //suprimme tous le cas cache en cas d'ajout user.
 
             $this->get('mailer')->send($message);
             
@@ -235,8 +238,11 @@ class UserController extends Controller
             
             if ($client){
                 
+                $cache = new FilesystemCache();
+                
                 $em->remove($client);
                 $em->flush();
+                $cache->clear(); //suprimme tous le cas cache en cas de suppression user.
                 
                 return new Response('user removed', Response::HTTP_ACCEPTED);
                 
@@ -289,7 +295,7 @@ class UserController extends Controller
                     return $listeUser;
                 }else{
                     $listeUser =  $cache->get(md5($url)); //récuperation objet depuis le cache.
-                    
+                    dump($listeUser);
                     return $listeUser;
                 }
                 
