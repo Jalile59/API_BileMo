@@ -19,6 +19,8 @@ use App\Entity\AccessToken;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\service\Tools;
+use Symfony\Component\Cache\Simple\FilesystemCache;
+
 class UserController extends Controller
 {
     /**
@@ -35,10 +37,20 @@ class UserController extends Controller
         $user = $tools->getUserByToken($token);
         
         $access = $tools->checkPrivilege($user, $token);
+        $cache = new FilesystemCache();
         
         if($access){
             
-            $user = $tools->getuserByMailOrId($id);
+            if(!$cache->has($id))   //vérification si id objet déja en cache.
+            {
+                $user = $tools->getuserByMailOrId($id);
+                
+                $tools->incache($id, $user); //mise en cache de l'objet.
+            }else{
+                $user = $cache->get($id); //récuperation objet depuis le cache.
+                
+                
+            }
             
             if($user){
                 
@@ -70,7 +82,9 @@ class UserController extends Controller
      */
     
     public function createlUser(Request $request) {
-               
+        
+        $cache = new FilesystemCache();
+        
         $header = $request->server->getHeaders();  //information de la requete avec le token.
         $token = explode(' ', $header['AUTHORIZATION']); // transforme le string en array.
         
@@ -162,6 +176,7 @@ class UserController extends Controller
                 
             )), 'text/html');
             
+            $cache->clear(); //suprimme tous le cas cache en cas d'ajout user.
 
             $this->get('mailer')->send($message);
             
@@ -223,8 +238,11 @@ class UserController extends Controller
             
             if ($client){
                 
+                $cache = new FilesystemCache();
+                
                 $em->remove($client);
                 $em->flush();
+                $cache->clear(); //suprimme tous le cas cache en cas de suppression user.
                 
                 return new Response('user removed', Response::HTTP_ACCEPTED);
                 
@@ -254,19 +272,34 @@ class UserController extends Controller
          */
         
         public function getListUserByclient(Request $request, Tools $tools, $page) {
-           
+            
+            $cache = new FilesystemCache();
             $token = $tools->getContentToken($request);
             $user = $tools->getUserByToken($token);
+            
+            $url = $tools->getUrl($request);    
+            
             
             $access = $tools->checkPrivilege($user, $token);
             
             if ($access) {
                 
-                $em = $this->getDoctrine()->getManager();
-                //$listeUser = $em->getRepository(User::class)->findBy(array('userParent'=>$user->getId()));
-                $listeUser = $em->getRepository(User::class)->getAll_pagination($user->getId(),$page);
+                if(!$cache->has(md5($url))) //vérification si id objet déja en cache.
+                {
+                    $em = $this->getDoctrine()->getManager();
+                    
+                    $listeUser = $em->getRepository(User::class)->getAll_pagination($user->getId(),$page);
+                    
+                    $tools->incache(md5($url), $listeUser);  //mise en cache de l'objet.
+                    
+                    return $listeUser;
+                }else{
+                    $listeUser =  $cache->get(md5($url)); //récuperation objet depuis le cache.
+                    dump($listeUser);
+                    return $listeUser;
+                }
+                
 
-                return $listeUser;
             }else{
                 
                 return new Response('You are no access', Response::HTTP_BAD_REQUEST);

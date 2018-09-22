@@ -6,6 +6,9 @@ use App\Entity\AccessToken;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Cache\Simple\FilesystemCache;
+use Symfony\Component\Filesystem\Filesystem;
+
 
 class Tools
 {
@@ -34,6 +37,15 @@ class Tools
         $token = explode(' ', $header['AUTHORIZATION']); // transforme le string en array.
 
         return $token[1]; // return token
+    }
+    
+    public function getUrl($request)
+    {
+        $data = $request->server->all();
+        $url = $data['PHP_SELF'];
+        
+        return $url;
+        
     }
 
     public function checkPrivilege(User $userCurrent, $token)
@@ -86,6 +98,14 @@ class Tools
             
             return $user;
         }
+        
+    }
+    
+    public function incache($id, $objet)
+    {
+        $cache = new FilesystemCache();
+        
+        $cache->set($id, $objet, 3600);
         
     }
 }
