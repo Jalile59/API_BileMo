@@ -77,11 +77,11 @@ class UserController extends Controller
      *  name = "app_user_add"
      * )
      * 
-     * @IsGranted("ROLE_ADMIN", statusCode=404, message="You are no access")
+     * 
      * 
      */
     
-    public function createlUser(Request $request) {
+    public function createlUser(Request $request, Tools $tools) {
         
         $cache = new FilesystemCache();
         
@@ -95,10 +95,13 @@ class UserController extends Controller
         $idAdmin = $em->getRepository(AccessToken::class)->findOneBy(array('token'=> $token[1]));
         $userParent = $idAdmin->getUser();
         
-       $roles = $userParent->getRoles();
         
-      
-        if($roles[0] != 'ROLE_ADMIN'){
+        
+       $roles = $userParent->getRoles();
+       
+      ////////////////Vérification droit de creation////////////
+        
+       if(!$roles[0] == 'ROLE_ADMIN' OR! $roles[0] == 'ROLE_SUPER_ADMIN'){
             
             return new Response('droit ADMIN manquant', Response::HTTP_UNAUTHORIZED);
         }
@@ -110,20 +113,33 @@ class UserController extends Controller
         
         //////////////// vérification name or email déja utilisé
         
-        $em_mail = $this->getDoctrine()->getManager();
-        $mail =$em_mail->getRepository(User::class)->findOneBy(array('email'=>$datas['email']));
+        $checkMailandUser = $tools->emailornameExist($datas['email'], $datas['username']);
         
-        $em_name = $this->getDoctrine()->getManager();
-        $name =$em_name->getRepository(User::class)->findOneBy(array('username'=>$datas['username']));
+       
         
-        
-        if($mail or $name){
+        if($checkMailandUser['mail'] or $checkMailandUser['name']){
             
             return new Response('Username or Mail is already used.', Response::HTTP_BAD_REQUEST);
         }else{
         
         //////////////// create user //////////////////////////////////////
-        
+            
+    
+            
+            if(isset($datas['ROLE']))
+            {
+                if($roles[0]=='ROLE_SUPER_ADMIN')
+                {
+                    $role = 'ROLE_ADMIN';
+                    
+                }else{
+                    
+                    return new Response('you cannot add role: '.$datas['ROLE'], Response::HTTP_UNAUTHORIZED);
+                }
+            }else{
+                $role = 'ROLE_SIMPLE_USER';
+            }
+            
         $userManager = $this->get('fos_user.user_manager');
                
         $user = $userManager->createUser(); /* @var $user User */
@@ -133,7 +149,7 @@ class UserController extends Controller
         $user->setEmail($datas['email']);
         $user->setEnabled($datas['username']); 
         $user->setUserParent($userParent);
-        $user->addRole('ROLE_USER');
+        $user->addRole($role);
         
         ////////////// Vérification asset user //////////////////////////////
         
@@ -202,7 +218,6 @@ class UserController extends Controller
         $token = $tools->getContentToken($request);
         
    
-        //die;
         if($idExist){
             
             if(is_numeric($id)){    // si id est int requête par findByIdn sinon findOneby 
@@ -257,6 +272,53 @@ class UserController extends Controller
             return new Response('You cannot deleted this user.', Response::HTTP_FORBIDDEN);
         }
             
+        }
+        
+        /**
+         * @Put(
+         *  path = "/api/updateuser/{id}",
+         *  name = "updateuser"
+         * 
+         * )
+         * 
+         */
+        
+        public function updateUser(Request $request, Tools $tools, $id)
+        {
+            
+            $userCurrent = $tools->getuserByMailOrId($id);
+            
+            
+            if(!$userCurrent){
+                
+                return new Response('user inconnu', Response::HTTP_BAD_REQUEST);
+            }
+            
+            $token = $tools->getContentToken($request);
+            
+            $access = $tools->checkPrivilege($userCurrent, $token);
+            
+            if(!$access){
+                
+                return new Response('You are no access', Response::HTTP_UNAUTHORIZED);
+            }
+            
+           
+            $data = $request->getContent();
+            
+            $data_decodejson = json_decode($data, true);
+            
+            $update = $tools->updateUser($data_decodejson, $userCurrent);
+            
+           if ($update)
+           {
+               return new Response("Mise à jour ok", Response::HTTP_ACCEPTED);
+               
+           }else{
+               return new Response("une erreur est surevenu", Response::HTTP_BAD_REQUEST);
+                              
+           }
+    
         }
         
         /**
