@@ -283,10 +283,10 @@ class UserController extends Controller
          * 
          */
         
-        public function updateUser(Request $request, Tools $tools, $id)
+        public function updateUser(Request $request, Tools $tools, $iduser)
         {
             
-            $userCurrent = $tools->getuserByMailOrId($id);
+            $userCurrent = $tools->getuserByMailOrId($iduser);
             
             
             if(!$userCurrent){

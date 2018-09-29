@@ -106,8 +106,6 @@ class Tools
         $cache->set($id, $objet, 3600);
     }
 
-    public function createUser($userName, $password, $mail, $userparent, $role, $fosUser)
-    {}
 
     public function emailornameExist($input_mail, $input_username)
     {
