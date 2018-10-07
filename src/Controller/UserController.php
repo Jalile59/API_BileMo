@@ -192,7 +192,7 @@ class UserController extends Controller
                 
             )), 'text/html');
             
-            $cache->clear(); //suprimme tous le cas cache en cas d'ajout user.
+            $cache->clear(); //suprimme le cache en cas d'ajout user.
 
             $this->get('mailer')->send($message);
             
@@ -399,6 +399,40 @@ class UserController extends Controller
            
             
             return $ressource;
+        }
+        
+        /**
+         * @Get(
+         *  path = "/api/client",
+         *  name = "_By_Client",
+         *  
+         *  
+         *  
+         * )
+         * @view
+         */
+        
+        public function getclient(){
+            
+
+            $em = $this->getDoctrine()->getManager();
+            
+            $client = $em->getRepository(Client::class)->find(68);
+            //* @var $client Client */
+            
+       
+            echo 'Client id: '.$client->getPublicId();
+            echo ' Secret: '.$client->getSecret();
+            
+            $tab = array('clientId'=>$client->getPublicId(),
+                'secret' => $client->getSecret());
+            
+            
+            return new Response(' ', Response::HTTP_ACCEPTED);
+            
+            
+            
+            
         }
        
        
