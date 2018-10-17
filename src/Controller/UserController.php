@@ -193,7 +193,7 @@ class UserController extends Controller
                 
             )), 'text/html');
             
-            $cache->clear(); //suprimme tous le cas cache en cas d'ajout user.
+            $cache->clear(); //suprimme le cache en cas d'ajout user.
 
             $this->get('mailer')->send($message);
             
@@ -406,8 +406,8 @@ class UserController extends Controller
             return $ressource;
         }
         
-        /**
-<<<<<<< HEAD
+        /*
+         * 
          * @GET(
          *      path = "/api/resetPassword/{id}",
          *      name = "Reset_password"
@@ -452,7 +452,8 @@ class UserController extends Controller
             dump($user);
                                 
             return new Response('vous allez recevoir un email', Response::HTTP_ACCEPTED);
-=======
+     }
+        /*
          * @Get(
          *  path = "/api/client",
          *  name = "_By_Client",
@@ -483,7 +484,7 @@ class UserController extends Controller
             
             
             
->>>>>>> 5a8a8c0a00d40540b19e1e6cbf261f8245ee7308
+
             
         }
        
