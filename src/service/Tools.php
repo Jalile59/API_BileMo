@@ -52,7 +52,7 @@ class Tools
 
         $userRole = $userParent->getRoles();
 
-        if ($userParent == $userCurrent->getUserParent() or $userRole[0] == 'ROLE_SUPER_ADMIN') {
+        if ($userParent == $userCurrent->getUserParent() or $userRole[0] == 'ROLE_ADMIN') {
 
             return TRUE;
         } else {

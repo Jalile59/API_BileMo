@@ -20,6 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\service\Tools;
 use Symfony\Component\Cache\Simple\FilesystemCache;
+use Symfony\Component\HttpKernel\HttpCache\ResponseCacheStrategy;
 
 class UserController extends Controller
 {
@@ -276,7 +277,7 @@ class UserController extends Controller
         
         /**
          * @Put(
-         *  path = "/api/updateuser/{id}",
+         *  path = "/api/updateuser/{iduser}",
          *  name = "updateuser"
          * 
          * )
@@ -341,6 +342,10 @@ class UserController extends Controller
             
             $url = $tools->getUrl($request);    
             
+            if($page <= 0)
+            {
+                return new Response('la page ne peut etre <= 0', Response::HTTP_BAD_REQUEST);
+            }
             
             $access = $tools->checkPrivilege($user, $token);
             
@@ -350,14 +355,14 @@ class UserController extends Controller
                 {
                     $em = $this->getDoctrine()->getManager();
                     
-                    $listeUser = $em->getRepository(User::class)->getAll_pagination($user->getId(),$page);
+                    $listeUser = $em->getRepository(User::class)->getAll_pagination($user->getId(),($page-1));
                     
                     $tools->incache(md5($url), $listeUser);  //mise en cache de l'objet.
                     
                     return $listeUser;
                 }else{
                     $listeUser =  $cache->get(md5($url)); //récuperation objet depuis le cache.
-                    dump($listeUser);
+                    
                     return $listeUser;
                 }
                 
@@ -399,6 +404,54 @@ class UserController extends Controller
            
             
             return $ressource;
+        }
+        
+        /**
+         * @GET(
+         *      path = "/api/resetPassword/{id}",
+         *      name = "Reset_password"
+         * 
+         * )
+         * 
+         * @View
+         */
+        
+        public function resetPassword($id, Tools $tools){
+            
+            $user = $tools->getuserByMailOrId($id); /* @var $user User */
+            
+            if(!$user)
+            {
+                return new Response('User no found', Response::HTTP_BAD_REQUEST);
+            }
+            
+                                
+            $password = $user->getPlainPassword();
+            dump($password);
+            $mail = $user->getEmail();
+            
+            ////////////////////////////////////////////
+            
+            $message = (new \Swift_Message())
+            ->setSubject('Password API')
+            ->setFrom('API@Bilemo.com')
+            ->setTo('jal.djellouli@gmail.com')
+            ->setBody($this->renderView('resendpassword.html.twig',array(
+                'pass'=> $password,
+                
+                
+            )), 'text/html');
+            
+            
+            $this->get('mailer')->send($message);
+            ///////////////////////////////////
+            
+            
+           
+            dump($user);
+                                
+            return new Response('vous allez recevoir un email', Response::HTTP_ACCEPTED);
+            
         }
        
        
