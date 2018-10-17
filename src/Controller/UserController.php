@@ -407,6 +407,7 @@ class UserController extends Controller
         }
         
         /**
+<<<<<<< HEAD
          * @GET(
          *      path = "/api/resetPassword/{id}",
          *      name = "Reset_password"
@@ -451,6 +452,38 @@ class UserController extends Controller
             dump($user);
                                 
             return new Response('vous allez recevoir un email', Response::HTTP_ACCEPTED);
+=======
+         * @Get(
+         *  path = "/api/client",
+         *  name = "_By_Client",
+         *  
+         *  
+         *  
+         * )
+         * @view
+         */
+        
+        public function getclient(){
+            
+
+            $em = $this->getDoctrine()->getManager();
+            
+            $client = $em->getRepository(Client::class)->find(68);
+            //* @var $client Client */
+            
+       
+            echo 'Client id: '.$client->getPublicId();
+            echo ' Secret: '.$client->getSecret();
+            
+            $tab = array('clientId'=>$client->getPublicId(),
+                'secret' => $client->getSecret());
+            
+            
+            return new Response(' ', Response::HTTP_ACCEPTED);
+            
+            
+            
+>>>>>>> 5a8a8c0a00d40540b19e1e6cbf261f8245ee7308
             
         }
        
