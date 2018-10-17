@@ -406,20 +406,18 @@ class UserController extends Controller
             return $ressource;
         }
         
-        /*
-         * 
-         * @GET(
-         *      path = "/api/resetPassword/{id}",
-         *      name = "Reset_password"
-         * 
+        /**
+         * @Get(
+         *  path ="/api/resetpassword/{iduser}",
+         *  name = "Reset_password"
          * )
          * 
-         * @View
+         * @view
          */
         
-        public function resetPassword($id, Tools $tools){
+        public function resetPassword($iduser, Tools $tools){
             
-            $user = $tools->getuserByMailOrId($id); /* @var $user User */
+            $user = $tools->getuserByMailOrId($iduser); /* @var $user User */
             
             if(!$user)
             {
@@ -427,31 +425,28 @@ class UserController extends Controller
             }
             
                                 
-            $password = $user->getPlainPassword();
-            dump($password);
+            $newpass = uniqid();
+            $user->setPlainPassword($newpass);
+            
             $mail = $user->getEmail();
             
-            ////////////////////////////////////////////
+            //////////////envoi mail//////////////////////
             
             $message = (new \Swift_Message())
             ->setSubject('Password API')
             ->setFrom('API@Bilemo.com')
-            ->setTo('jal.djellouli@gmail.com')
+            ->setTo($mail)
             ->setBody($this->renderView('resendpassword.html.twig',array(
-                'pass'=> $password,
+                'pass'=> $newpass,
                 
                 
             )), 'text/html');
             
             
             $this->get('mailer')->send($message);
-            ///////////////////////////////////
             
-            
-           
-            dump($user);
-                                
-            return new Response('vous allez recevoir un email', Response::HTTP_ACCEPTED);
+                                                   
+            return new Response('Un nouveau mode passe a été envoyé', Response::HTTP_ACCEPTED);
      }
         /*
          * @Get(
