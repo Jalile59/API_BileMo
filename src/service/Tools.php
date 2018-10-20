@@ -46,13 +46,22 @@ class Tools
         return $url;
     }
 
-    public function checkPrivilege(User $userCurrent, $token)
+    public function checkPrivilege(User $userCurrent, $token, $type)
     {
         $userParent = $this->getUserByToken($token);
 
         $userRole = $userParent->getRoles();
-
-        if ($userParent == $userCurrent->getUserParent() or $userRole[0] == 'ROLE_ADMIN') {
+        
+        if($type == TRUE){
+            
+            $role = 'ROLE_SUPER_ADMIN';
+            
+        }else{
+            
+            $role = 'ROLE_ADMIN';
+        }
+        
+        if ($userParent == $userCurrent->getUserParent() or $userRole[0] == $role) {
 
             return TRUE;
         } else {

@@ -21,6 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\service\Tools;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\HttpKernel\HttpCache\ResponseCacheStrategy;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UserController extends Controller
 {
@@ -37,7 +38,15 @@ class UserController extends Controller
         $token = $tools->getContentToken($request);
         $user = $tools->getUserByToken($token);
         
-        $access = $tools->checkPrivilege($user, $token);
+        $usercurrent = $tools->getuserByMailOrId($id);
+        
+        if(!$usercurrent){
+            
+            return new JsonResponse('user not found !',400);
+            
+        }
+        
+        $access = $tools->checkPrivilege($usercurrent, $token, TRUE);
         $cache = new FilesystemCache();
         
         if($access){
@@ -58,13 +67,14 @@ class UserController extends Controller
                 return $user;
                 
                 }else{
+                    return new JsonResponse('user not found !',400);
                     
-                    return new Response('user not found !', RedirectResponse::HTTP_BAD_REQUEST);
                 }
                 
             }else{
                 
-                return new Response('access denied.', RedirectResponse::HTTP_UNAUTHORIZED);
+                
+                return new JsonResponse('access denied.',401);
                 
             }
         
@@ -104,7 +114,8 @@ class UserController extends Controller
         
        if(!$roles[0] == 'ROLE_ADMIN' OR! $roles[0] == 'ROLE_SUPER_ADMIN'){
             
-            return new Response('droit ADMIN manquant', Response::HTTP_UNAUTHORIZED);
+            
+            return new JsonResponse('droit ADMIN manquant',401);
         }
         
        ///////////////récuperation contenu/////////////////////////
@@ -120,7 +131,8 @@ class UserController extends Controller
         
         if($checkMailandUser['mail'] or $checkMailandUser['name']){
             
-            return new Response('Username or Mail is already used.', Response::HTTP_BAD_REQUEST);
+            return new JsonResponse('Username or Mail is already used.',400);
+            
         }else{
         
         //////////////// create user //////////////////////////////////////
@@ -135,7 +147,8 @@ class UserController extends Controller
                     
                 }else{
                     
-                    return new Response('you cannot add role: '.$datas['ROLE'], Response::HTTP_UNAUTHORIZED);
+                    return new JsonResponse('you cannot add role: '.$datas['ROLE'],401);
+                    
                 }
             }else{
                 $role = 'ROLE_SIMPLE_USER';
@@ -158,7 +171,8 @@ class UserController extends Controller
         
         if (count($error)){
             
-            return new Response($error, Response::HTTP_BAD_REQUEST);
+            return new JsonResponse($error,400);
+            //return new Response($error, Response::HTTP_BAD_REQUEST);
         }
         
    
@@ -198,8 +212,9 @@ class UserController extends Controller
             $this->get('mailer')->send($message);
             
             //ajouter location header
-      
-        return new Response('success new user.', Response::HTTP_CREATED);
+        
+          return new JsonResponse('success new user.',201);
+        
         }
     }
     
@@ -242,13 +257,14 @@ class UserController extends Controller
             
         }else{
             
-            return new Response('User not found', Response::HTTP_BAD_REQUEST);
+            return new JsonResponse('User not found',400);
+            
         }
         
         // verfier l'user avant de supprimer
         
         
-        $userParent = $tools->checkPrivilege($user, $token);
+        $userParent = $tools->checkPrivilege($user, $token, TRUE);
         
         if($userParent){
             
@@ -260,17 +276,18 @@ class UserController extends Controller
                 $em->flush();
                 $cache->clear(); //suprimme tous le cas cache en cas de suppression user.
                 
-                return new Response('user removed', Response::HTTP_ACCEPTED);
+                return new JsonResponse('user removed',200);
                 
             }else{
                 
-                return new Response('User not found', Response::HTTP_BAD_REQUEST);
+                return new JsonResponse('User not found',400);
+                
                 
             }
             
         }else{
             
-            return new Response('You cannot deleted this user.', Response::HTTP_FORBIDDEN);
+            return new JsonResponse('You cannot deleted this user.',403);
         }
             
         }
@@ -292,16 +309,18 @@ class UserController extends Controller
             
             if(!$userCurrent){
                 
-                return new Response('user inconnu', Response::HTTP_BAD_REQUEST);
+                return new JsonResponse('user inconnu',400);
+                
             }
             
             $token = $tools->getContentToken($request);
             
-            $access = $tools->checkPrivilege($userCurrent, $token);
+            $access = $tools->checkPrivilege($userCurrent, $token, TRUE);
             
             if(!$access){
                 
-                return new Response('You are no access', Response::HTTP_UNAUTHORIZED);
+                return new JsonResponse('You are no access',401);
+                
             }
             
            
@@ -313,10 +332,12 @@ class UserController extends Controller
             
            if ($update)
            {
-               return new Response("Mise à jour ok", Response::HTTP_ACCEPTED);
+               return new JsonResponse('update ok',200);
+               
                
            }else{
-               return new Response("une erreur est surevenu", Response::HTTP_BAD_REQUEST);
+               return new JsonResponse('error',400);
+               
                               
            }
     
@@ -344,10 +365,10 @@ class UserController extends Controller
             
             if($page <= 0)
             {
-                return new Response('la page ne peut etre <= 0', Response::HTTP_BAD_REQUEST);
+                return new JsonResponse('la page ne peut etre =< 0',400);
             }
             
-            $access = $tools->checkPrivilege($user, $token);
+            $access = $tools->checkPrivilege($user, $token, FALSE);
             
             if ($access) {
                 
@@ -369,7 +390,7 @@ class UserController extends Controller
 
             }else{
                 
-                return new Response('You are no access', Response::HTTP_BAD_REQUEST);
+                return new JsonResponse('You are no access',403);
                 
             }
             
@@ -398,10 +419,6 @@ class UserController extends Controller
 
             ];
             
-
-            
-      
-           
             
             return $ressource;
         }
@@ -421,7 +438,8 @@ class UserController extends Controller
             
             if(!$user)
             {
-                return new Response('User no found', Response::HTTP_BAD_REQUEST);
+                return new JsonResponse('User no found',400);
+                
             }
             
                                 
@@ -445,8 +463,7 @@ class UserController extends Controller
             
             $this->get('mailer')->send($message);
             
-                                                   
-            return new Response('Un nouveau mode passe a été envoyé', Response::HTTP_ACCEPTED);
+            return new JsonResponse('mail has been send',200);
      }
         /*
          * @Get(
@@ -464,9 +481,9 @@ class UserController extends Controller
 
             $em = $this->getDoctrine()->getManager();
             
-            $client = $em->getRepository(Client::class)->find(68);
-            //* @var $client Client */
-            
+            $client = $em->getRepository(Client::class)->find(68);  /* @var $client Client */
+           
+           
        
             echo 'Client id: '.$client->getPublicId();
             echo ' Secret: '.$client->getSecret();

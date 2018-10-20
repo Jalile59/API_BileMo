@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 use Symfony\Component\Routing\Annotation\Route;
@@ -67,7 +67,9 @@ class BilemoController extends Controller
        
        $cache->clear(); //suprimme tous le cas cache en cas d'ajout produit
        
-       return New Response('', Response::HTTP_CREATED);
+       
+       return new JsonResponse('product created',200);
+       
         
         ;
     }
@@ -107,6 +109,7 @@ class BilemoController extends Controller
             
         }else{
             
+            return new JsonResponse('product no found',400);
             return new Response('product no found', Response::HTTP_BAD_REQUEST);
         }
         
