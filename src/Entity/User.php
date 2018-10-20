@@ -8,12 +8,33 @@ use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use FOS\OAuthServerBundle\Entity\Client as BaseClient;
 use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
+
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="user")
  * @Serializer\ExclusionPolicy("ALL")
+ * 
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "app_user_show",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *      absolute = true
+ *      )
+ * )
+ * 
+ * @Hateoas\Relation(
+ *      "create",
+ *      href = @Hateoas\Route(
+ *          "app_user_add",
+ *      absolute = true
+ *          
+ *      )
+ * )
+ * 
  *
  */
 class User extends BaseUser
